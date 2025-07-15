@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import User from "../models/user.model";
-import { userLoginValidator, userRegisterValidator } from "../types/userValidater";
+import { userLoginValidator, userRegisterValidator, userUpdateValidator } from "../types/userValidater";
 import bcrypt from "bcryptjs";
 
 export const  register = async (req, res) => {
@@ -156,7 +156,16 @@ export const updateUser = async (req, res) => {
                 msg: "All fields are required"
             });
         }
-    
+        
+        // validate the data using zod
+        const payload = req.body;
+        const parsedPayload = userUpdateValidator.safeParse(payload);
+        
+        if (!parsedPayload.success) {
+            return res.status(400).json({
+                msg: "Invalid data",
+            });
+        }
         // updating the user
         const updatedUser = await User.findByIdAndUpdate(req.user.id, {
             firstName,
@@ -179,3 +188,19 @@ export const updateUser = async (req, res) => {
         });
     }
 }  
+
+export const getMe = async (req, res) => {
+    try {
+        // Fetch the user from the database using the userId from the request
+        const user = await User.findById(req.userId).select("-password");
+        
+        if (!user) {
+            return res.status(404).json({ error: { message: "User not found" } });
+        }
+
+        res.status(200).json({ user });
+    } catch (error) {
+        console.error("Error fetching user:", error.message);
+        res.status(500).json({ error: { message: "Internal server error" } });
+    }
+}
