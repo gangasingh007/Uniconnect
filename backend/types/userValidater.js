@@ -5,9 +5,9 @@ export const userRegisterValidator = z.object({
     lastName: z.string().min(1, "Last name is required"),
     password: z.string().min(6, "Password must be at least 6 characters long"),
     email: z.email("Invalid email format"),
-    courseName: z.string().enum(["Btech", "Mtech"], "Invalid course name"),
-    section: z.string().enum(["A", "B", "C", "D", "CE"], "Invalid section"),
-    semester: z.string().enum(["1", "2", "3", "4", "5", "6", "7", "8"], "Invalid semester"),
+    courseName: z.string(),
+    section: z.string(),
+    semester: z.string(),
     rollNumber: z.string().min(5, "Roll number must be at least 5 characters long"),    
 });
 

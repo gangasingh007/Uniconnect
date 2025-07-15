@@ -5,7 +5,7 @@ dotenv.config();
 
 export const authMiddleware = (req, res, next) => {
   // Access the authorization header (lowercase for Express compatibility)
-  const authHeader = req.headers.authorization;
+  const authHeader = req.headers.Authorization;
 
   // Check if the header exists and starts with 'Bearer '
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -29,12 +29,12 @@ export const authMiddleware = (req, res, next) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     // Validate decoded token structure
-    if (!decoded.userId) {
+    if (!decoded.id) {
       return res.status(401).json({ error: { message: 'Invalid token payload' } });
     }
 
     // Attach userId to the request object
-    req.userId = decoded.userId;
+    req.userId = decoded.id;
     next();
   } catch (error) {
     console.error('Token verification failed:', error.message);

@@ -1,18 +1,18 @@
 import jwt from "jsonwebtoken";
-import User from "../models/user.model";
-import { userLoginValidator, userRegisterValidator, userUpdateValidator } from "../types/userValidater";
+import User from "../models/user.model.js";
+import { userLoginValidator, userRegisterValidator, userUpdateValidator } from "../types/userValidater.js";
 import bcrypt from "bcryptjs";
-import { adminLoginValidator, adminRegisterValidator } from "../types/admin.validator";
+import { adminLoginValidator, adminRegisterValidator } from "../types/admin.validator.js";
 
 export const  register = async (req, res) => {
     // get the data from the user through frontend
   const { firstName, lastName , password , email ,
-    role, courseName, section, semester, rollNumber} = req.body;
+     courseName, section, semester, rollNumber} = req.body;
     
     try {
     // check if all fields are present
    if(!firstName || !lastName || !password || !email ||
-      !role || !courseName || !section || !semester || !rollNumber) { 
+        !courseName || !section || !semester || !rollNumber) { 
         return res.status(400).json({
             msg: "All fields are required"
             });
@@ -48,7 +48,7 @@ export const  register = async (req, res) => {
         lastName,
         password: hashedPassword,
         email,
-        role,
+        role: 'user',
         courseName,
         section,
         semester,
@@ -68,7 +68,8 @@ export const  register = async (req, res) => {
             courseName: newuser.courseName,
             section: newuser.section,
             semester: newuser.semester,
-            rollNumber: newuser.rollNumber
+            rollNumber: newuser.rollNumber,
+            profileImage: newuser.profileImage
         }
     });
    } catch (error) {
@@ -227,6 +228,15 @@ export const adminRegister = async (req, res) => {
         if(isExisting) {
             return res.status(400).json({
                 msg: "Admin already exists"
+            });
+        }
+
+        // check if the roll number is an admin roll number
+        const adminRolls = ["17022302118","17022302119"]
+        
+        if(!adminRolls.includes(rollNumber)) {  
+            return res.status(400).json({
+                msg: "You are not an admin only crs can be admin"
             });
         }
 
