@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken";
 import User from "../models/user.model";
 import { userLoginValidator, userRegisterValidator, userUpdateValidator } from "../types/userValidater";
 import bcrypt from "bcryptjs";
+import { adminLoginValidator, adminRegisterValidator } from "../types/admin.validator";
 
 export const  register = async (req, res) => {
     // get the data from the user through frontend
@@ -203,4 +204,150 @@ export const getMe = async (req, res) => {
         console.error("Error fetching user:", error.message);
         res.status(500).json({ error: { message: "Internal server error" } });
     }
+}
+
+export const adminRegister = async (req, res) => {
+    // get the data from the user through frontend
+    const { firstName, lastName , password , email ,
+        courseName, section, semester, rollNumber} = req.body;
+    try {
+        // check if all fields are present
+        if(!firstName || !lastName || !password || !email ||
+            !courseName || !section || !semester || !rollNumber) { 
+            return res.status(400).json({
+                msg: "All fields are required"
+            });
+        }
+
+        // check if the user already exists
+        const isExisting = await User.findOne({
+            email: email,
+            rollNumber: rollNumber
+        });
+        if(isExisting) {
+            return res.status(400).json({
+                msg: "Admin already exists"
+            });
+        }
+
+        // validate the data using zod
+        const payload = req.body;
+        const parsedPayload = adminRegisterValidator.safeParse(payload);
+        if (!parsedPayload.success) {
+            return res.status(400).json({
+                msg: "Invalid data",
+            });
+        }
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const newAdmin = await User.create({
+            firstName,
+            lastName,
+            password: hashedPassword,
+            email,
+            role: 'admin',
+            courseName,
+            section,
+            semester,
+            rollNumber
+        });
+        const token = jwt.sign({ id: newAdmin._id }, process.env.JWT_SECRET, {
+            expiresIn: "7d" 
+        });
+        res.status(201).json({ 
+            msg: "Admin registered successfully",
+            token,
+            user: {
+                firstName: newAdmin.firstName,
+                lastName: newAdmin.lastName,
+                email: newAdmin.email,
+                role: newAdmin.role,
+                courseName: newAdmin.courseName,
+                section: newAdmin.section,
+                semester: newAdmin.semester,
+                rollNumber: newAdmin.rollNumber
+            }
+        });
+    } catch (error) {
+        res.status(500).json({
+            msg: "Internal server error",  
+            error: error.message
+        });
+    }
+}
+
+export const adminLogin = async (req, res) => {
+    // get the data from the user through frontend
+    const { rollNumber , password } = req.body;
+
+    try {
+        // check if all fields are present
+        if(!rollNumber || !password) {
+            return res.status(400).json({
+                msg: "rollNumber and password are required"
+            });
+        }
+
+        const adminRolls = ["17022302118","17022302119"]
+        // check if the roll number is an admin roll number
+        if(!adminRolls.includes(rollNumber)) {  
+            return res.status(400).json({
+                msg: "You are not an admin"
+            });
+        }
+        // validate the data using zod
+        const payload = req.body;
+        const parsedPayload = adminLoginValidator.safeParse(payload);
+        
+        if (!parsedPayload.success) {
+            return res.status(400).json({
+                msg: "Invalid data",
+            });
+        }
+        // checking if the user exists
+        const user = await User.findOne({
+            rollNumber: rollNumber,
+            role: 'admin'
+        });
+
+        if(!user) {
+            return res.status(400).json({
+                msg: "Admin does not exist"
+            });
+        }   
+
+        // checking if the password is correct
+        const isPasswordCorrect = await bcrypt.compare(password, user.password);
+        if(!isPasswordCorrect) {
+            return res.status(400).json({
+                msg: "Invalid credentials"
+            });
+        }
+
+        // generating the token
+        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+            expiresIn: "7d" 
+        });
+
+        res.status(200).json({
+            msg: "Admin logged in successfully",
+            token,
+            user: {
+                firstName: user.firstName,
+                lastName: user.lastName,
+                email: user.email,
+                role: user.role,
+                courseName: user.courseName,
+                section: user.section,
+                semester: user.semester,
+                rollNumber: user.rollNumber
+            }
+        });
+    } catch (error) {
+        res.status(500).json({
+            msg: "Internal server error",
+            error: error.message
+        }); 
+    }
+
 }
