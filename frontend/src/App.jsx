@@ -5,10 +5,13 @@ import Home from './pages/Home'
 import Register from './components/Register'
 import Login from './components/Login'
 import LandingPage from './pages/LandingPage'
+import { Toaster } from 'react-hot-toast';
 
 const App = () => {
   return (
-    <BrowserRouter>
+    <>
+   <Toaster position="top-right" reverseOrder={false} />
+      <BrowserRouter>
       <Routes>
         <Route path="/" element={<ProtectedRoute>
           <Home />
@@ -18,6 +21,7 @@ const App = () => {
         <Route path="/landing" element={<LandingPage />} />
       </Routes>
     </BrowserRouter>
+    </>
   )
 }
 

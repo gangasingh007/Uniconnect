@@ -1,18 +1,26 @@
 import React, { useState } from 'react';
+import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import { useRecoilState } from 'recoil';
+import { authAtom } from '../atoms/authAtom';
+import axios from 'axios';
+import toast from 'react-hot-toast';
 
 const Register = () => {
+  const [auth , setAuth] = useRecoilState(authAtom);
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
     email: '',
     password: '',
-    class: '',
+    courseName: '',
     section: '',
     semester: '',
     rollNumber: ''
   });
+  const [loading, setloading] = useState(false);
+  
 
   const handleChange = (e) => {
     setFormData({
@@ -21,15 +29,40 @@ const Register = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
-    // Handle form submission here
+    setloading(true);
+
+    try {
+      const res = await axios.post("http://localhost:3000/api/v1/auth/user/register",formData)
+      const data = res.data;
+      const token  = data.token
+      setAuth({user : data.user , token : token})
+      localStorage.setItem("token",token)
+      toast.success("Welcome!!")
+      navigate("/")
+    } catch (error) {
+      toast.error("Something Went Wrong!")
+      console.log(error)
+    }
+    finally{
+      setloading(false)
+    }
   };
 
   return (
-    <div className="min-h-screen  flex items-center justify-center p-4">
-      <div className="w-full max-w-md rounded-2xl p-6 border border-slate-500/50">
+    <motion.div
+      className="min-h-screen flex items-center justify-center p-4"
+      initial={{ opacity: 0, y: 40 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, ease: 'easeOut' }}
+    >
+      <motion.div
+        className="w-full max-w-md rounded-2xl p-6 border border-slate-500/50"
+        initial={{ scale: 0.95, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+      >
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent mb-2">UniConnect</h1>
@@ -51,7 +84,7 @@ const Register = () => {
                   value={formData.firstName}
                   onChange={handleChange}
                   className="w-full px-4 py-3 bg-slate-800/50 border border-slate-800 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all"
-                  placeholder="John"
+                  placeholder="First Name"
                   required
                 />
               </div>
@@ -65,7 +98,7 @@ const Register = () => {
                   value={formData.lastName}
                   onChange={handleChange}
                   className="w-full px-4 py-3 bg-slate-800/50 border border-slate-800 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all"
-                  placeholder="Doe"
+                  placeholder="Last Name"
                   required
                 />
               </div>
@@ -82,7 +115,7 @@ const Register = () => {
                 value={formData.email}
                 onChange={handleChange}
                 className="w-full px-4 py-3 bg-slate-800/50 border border-slate-800 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all"
-                placeholder="john.doe@university.edu"
+                placeholder="example@gmail.com"
                 required
               />
             </div>
@@ -111,8 +144,8 @@ const Register = () => {
                 </label>
                 <input
                   list="classes"
-                  name="class"
-                  value={formData.class}
+                  name="courseName"
+                  value={formData.courseName}
                   onChange={handleChange}
                   className="w-full px-4 py-3  bg-slate-800/50 border border-slate-800 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all"
                   placeholder="Select class"
@@ -125,7 +158,7 @@ const Register = () => {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-2">
-                  Section (Select D for Mtech)
+                  Section
                 </label>
                 <input
                   list="sections"
@@ -194,7 +227,7 @@ const Register = () => {
               onClick={handleSubmit}
               className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
             >
-              Create Account
+              {!loading ? "Create Account" : "Loading..."}
             </button>
           </div>
         </div>
@@ -207,8 +240,8 @@ const Register = () => {
             </button>
           </p>
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 };
 
