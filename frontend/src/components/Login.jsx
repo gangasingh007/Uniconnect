@@ -25,12 +25,12 @@ const Login = () => {
       const data = res.data;
       const token = data.token
       setauth({ token: data.token ,user : data.user });
-      toast.success('Login successful!',{style:{backgroundColor:"black",color:"white"}})
+      toast.success('Login successful!')
       localStorage.setItem('token', token);
       navigate("/");
     } catch (error) {
       console.log(error)
-      toast.error(error.response?.data?.msg || 'Login failed'); 
+      toast.error('Login failed'); 
     }
     finally{
       setloading(false);

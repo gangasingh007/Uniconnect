@@ -39,7 +39,7 @@ const Register = () => {
       const token  = data.token
       setAuth({user : data.user , token : token})
       localStorage.setItem("token",token)
-      toast.success("Welcome!!")
+      toast.success("Welcome!!" )
       navigate("/")
     } catch (error) {
       toast.error("Something Went Wrong!")
