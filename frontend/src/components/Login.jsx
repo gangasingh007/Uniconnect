@@ -5,11 +5,13 @@ import axios from 'axios';
 import { useRecoilState } from 'recoil';
 import { authAtom } from '../atoms/authAtom';
 import toast from 'react-hot-toast';
+import { loadingAtom } from '../atoms/states.atom';
+import Loader from './Loader';
 
 const Login = () => {
   const [rollNumber , setrollNumber] = useState("")
   const [password, setpassword] = useState("")
-  const [loading, setloading] = useState(false);
+  const [loading, setloading] = useRecoilState(loadingAtom);
   const [auth , setauth] = useRecoilState(authAtom);
   const navigate = useNavigate();
 
@@ -18,7 +20,7 @@ const Login = () => {
     setloading(true);
 
     try {
-      const res = await axios.post("http://localhost:3000/api/v1/auth/user/login",{
+      const res = await axios.post("http://localhost:3000/api/v1/auth/student/login",{
         rollNumber,
         password
       })
@@ -38,7 +40,8 @@ const Login = () => {
   };
 
   return (
-    <motion.div
+    <>
+      {loading ? <Loader /> : <motion.div
       className="min-h-screen flex items-center justify-center p-4"
       initial={{ opacity: 0, y: 40 }}
       animate={{ opacity: 1, y: 0 }}
@@ -97,7 +100,7 @@ const Login = () => {
               onClick={handleSubmit}
               className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
             >
-              {!loading ? "Sign In" : "Loading..."}
+              Sign In
             </button>
           </div>
         </div>
@@ -111,7 +114,8 @@ const Login = () => {
           </p>
         </div>
       </motion.div>
-    </motion.div>
+    </motion.div>}
+    </>
   );
 };
 

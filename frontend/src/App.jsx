@@ -6,8 +6,14 @@ import Register from './components/Register'
 import Login from './components/Login'
 import LandingPage from './pages/LandingPage'
 import toast, { Toaster } from 'react-hot-toast';
+import { errorAtom, loadingAtom } from './atoms/states.atom'
+import { useRecoilState } from 'recoil'
+import Loader from './components/Loader'
 
 const App = () => {
+  const [loading, setLoading] = useRecoilState(loadingAtom);
+  const [error, setError] = useRecoilState(errorAtom);
+
   return (
     <>
     <Toaster
@@ -37,6 +43,7 @@ const App = () => {
           },
         }}
       />
+      {loading ? <Loader /> :
       <BrowserRouter>
       <Routes>
         <Route path="/" element={<ProtectedRoute>
@@ -46,7 +53,7 @@ const App = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/landing" element={<LandingPage />} />
       </Routes>
-    </BrowserRouter>
+    </BrowserRouter>}
     </>
   )
 }
