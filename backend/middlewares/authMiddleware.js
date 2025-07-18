@@ -5,7 +5,7 @@ dotenv.config();
 
 export const authMiddleware = (req, res, next) => {
   // Access the authorization header (lowercase for Express compatibility)
-  const authHeader = req.headers.Authorization;
+  const authHeader = req.headers.authorization;
 
   // Check if the header exists and starts with 'Bearer '
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
