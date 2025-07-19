@@ -39,7 +39,7 @@ const Navbar = () => {
     };
 
     return (
-        <nav className="w-full px-6 py-4 flex items-center justify-between bg-gradient-to-r from-[#141423] to-[#1a1a2e] border-b border-[#2a2a40] shadow-lg backdrop-blur-sm">
+        <nav className="w-full px-6  py-4 flex items-center justify-between bg-gradient-to-r from-[#141423] to-[#1a1a2e] border-b border-[#2a2a40] shadow-lg backdrop-blur-sm sm: mb-5">
             {/* Left: Logo */}
             <div className="flex items-center">
                 <div className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">

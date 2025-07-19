@@ -23,8 +23,8 @@ const HeroSection = () => {
 
   return (
     <>
-    <Navbar></Navbar>
-    <section className="relative w-[500] min-h-[40vh] mt-3  px-6 z-[-10]  md:px-16 mt-10 md:pt-24 text-white">
+    <Navbar />
+    <section className="relative w-[500] min-h-[40vh] mt-[3]  px-6 z-[-10]  md:px-16 mt-[12] md:pt-24 text-white">
       {/* Background Glow */}
       <div className="absolute inset-0 z-0 w-[300px] h-[300px]">
         <div className="w-[300px] h-[300px] bg-purple-700 opacity-30 blur-3xl rounded-full absolute top-0 left-0 -translate-x-1/2 -translate-y-1/2"></div>
@@ -32,7 +32,7 @@ const HeroSection = () => {
       </div>
 
       {/* Main Content */}
-      <div className="relative z-10 max-w-3xl bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 p-6 md:p-10 shadow-xl shadow-purple-900/20">
+      <div className="relative z-10 max-w-3xl bg-white/2 backdrop-blur-md rounded-2xl border border-white/10 p-6 md:p-10 shadow-xl shadow-purple-900/20">
         <h2 className="text-3xl pb-3 sm:text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 mb-4">
           {!animationDone ? (
             <Typewriter
@@ -60,7 +60,7 @@ const HeroSection = () => {
         {userClass && (
           <p className="text-sm md:text-base text-slate-300 mb-2">{userClass}</p>
         )}
-
+        <p className="text-sm md:text-base text-slate-300 mb-2">Roll Number -{user.rollNumber} </p>
         <p className="text-base md:text-lg font-medium text-slate-100 mb-4">
           What would you like to study today?
         </p>

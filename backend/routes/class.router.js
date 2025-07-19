@@ -8,5 +8,4 @@ const router = express.Router();
 router.get("/getClass/:id",authMiddleware,getclass)
 router.get("/getStudents/:id",authMiddleware,getStudents)
 
-
 export default router;
