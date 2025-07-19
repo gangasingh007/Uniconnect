@@ -17,7 +17,7 @@ const App = () => {
   const [loading, setLoading] = useRecoilState(loadingAtom);
   const [error, setError] = useRecoilState(errorAtom);
   const [user, setuser] = useRecoilState(userAtom);
-
+  const token = localStorage.getItem("token")
   useEffect(() => {
     const fetchUser = async () => {
       setLoading(true);
@@ -41,7 +41,7 @@ const App = () => {
       }
     };
     fetchUser();
-  }, [``]);
+  }, [token]);
   
 
   return (

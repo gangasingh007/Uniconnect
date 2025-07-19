@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { User, Edit3, Mail, GraduationCap, Calendar, Hash, Book, Users, X, Save, Eye, EyeOff, Home, ArrowRightLeft, ArrowLeft } from 'lucide-react';
+import { User, Edit3, Mail, GraduationCap, Calendar, Hash, Book, Users, X, Save, Eye, EyeOff, Home, ArrowRightLeft, ArrowLeft, UserRoundCheck } from 'lucide-react';
 import { useRecoilState } from 'recoil';
 import { userAtom } from '../atoms/userAtom';
 import toast from 'react-hot-toast';
@@ -166,6 +166,14 @@ const ProfilePage = () => {
                                 <h3 className="text-sm font-medium text-gray-400 uppercase tracking-wide">Roll Number</h3>
                             </div>
                             <p className="text-lg font-semibold text-white">{user?.rollNumber || ''}</p>
+                        </div>
+                        <div className="bg-[#252540] rounded-lg p-6 border border-[#3a3a50]">
+                            <div className="flex items-center mb-3">
+                            <UserRoundCheck className="w-5 h-5 text-orange-400 mr-3" />
+                            <h3 className="text-sm font-medium text-gray-400 uppercase tracking-wide"/>
+                                <h3 className="text-sm font-medium text-gray-400 uppercase tracking-wide">Role </h3>
+                            </div>
+                            <p className="text-lg font-semibold text-white">{user?.role || ''}</p>
                         </div>
                     </div>
                 </div>

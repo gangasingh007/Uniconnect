@@ -6,17 +6,13 @@ import { loadingAtom } from '../atoms/states.atom';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
-
-
 const Navbar = () => {
-    const user = useRecoilValue(userAtom); // Using mock data instead of Recoil
+    const user = useRecoilValue(userAtom);
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const dropdownRef = useRef(null);
-    const [loading , setloading] = useRecoilState(loadingAtom);
-    const navigate = useNavigate()
+    const [loading, setLoading] = useRecoilState(loadingAtom);
+    const navigate = useNavigate();
 
-
-    // Close dropdown when clicking outside
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -29,77 +25,80 @@ const Navbar = () => {
     }, []);
 
     const handleLogout = () => {
-        setloading(true);
-
+        setLoading(true);
         try {
             localStorage.removeItem("token");
-            navigate("/login")
-            toast.success("You have been logged out")
+            navigate("/login");
+            toast.success("You have been logged out");
         } catch (error) {
-            toast.error("Something went wrong")
-            console.log(error)
-        }finally{
-            setloading(false)
+            toast.error("Something went wrong");
+            console.log(error);
+        } finally {
+            setLoading(false);
         }
     };
 
     return (
-        <nav className="w-full px-6 py-4 flex items-center justify-between bg-[#1a1a2e] border-b border-[#2a2a40] shadow-lg backdrop-blur-sm">
+        <nav className="w-full px-6 py-4 flex items-center justify-between bg-gradient-to-r from-[#141423] to-[#1a1a2e] border-b border-[#2a2a40] shadow-lg backdrop-blur-sm">
             {/* Left: Logo */}
             <div className="flex items-center">
-                <div className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-500 to-pink-400">
+                <div className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
                     UniConnect
                 </div>
             </div>
 
-            {/* Right: Notifications + Profile Dropdown */}
+            {/* Right: Profile Dropdown */}
             <div className="flex items-center space-x-4">
-                {/* Profile Dropdown */}
                 <div className="relative" ref={dropdownRef}>
                     <button
                         onClick={() => setDropdownOpen(!dropdownOpen)}
-                        className="flex items-center space-x-3 px-3 py-2 rounded-lg bg-[#252540] hover:bg-[#2f2f4a] transition-all duration-200 border border-[#3a3a50] focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50"
+                        className="flex items-center space-x-3 px-3 py-2 rounded-lg bg-[#151528] hover:bg-[#1f1f35] border border-[#2a2a40] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50"
+                        aria-haspopup="true"
+                        aria-expanded={dropdownOpen}
                     >
-                        {/* Profile Avatar */}
-                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white font-medium text-sm shadow-lg">
-                            {user && user.firstName ? user.firstName.charAt(0).toUpperCase() : 'U'}
+                        {/* Avatar */}
+                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white font-medium text-sm shadow-md">
+                            {user?.firstName?.charAt(0).toUpperCase() || user?.email?.charAt(0).toUpperCase() || 'U'}
                         </div>
-                        
-                        {/* User Name */}
-                        {user && user.firstName && (
-                            <span className="text-white font-medium hidden md:inline max-w-32 truncate">
+
+                        {/* Username */}
+                        {user?.firstName && (
+                            <span className="text-white font-medium hidden md:inline max-w-[100px] truncate">
                                 {user.firstName}
                             </span>
                         )}
-                        
-                        {/* Dropdown Arrow */}
-                        <ChevronDown 
+
+                        {/* Arrow */}
+                        <ChevronDown
                             className={`text-gray-400 w-4 h-4 transition-transform duration-200 ${
                                 dropdownOpen ? 'rotate-180' : ''
-                            }`} 
+                            }`}
                         />
                     </button>
 
-                    {/* Dropdown Menu */}
+                    {/* Dropdown */}
                     {dropdownOpen && user && (
-                        <div className="absolute right-0 mt-2 w-56 bg-[#1f1f35] border border-[#3a3a50] rounded-lg shadow-xl z-50 overflow-hidden animate-in slide-in-from-top-2 fade-in duration-200">
+                        <div className="absolute right-0 mt-2 w-56 bg-[#1f1f35] border border-[#3a3a50] rounded-lg z-50 overflow-hidden animate-in slide-in-from-top-2 fade-in duration-200 shadow-[0_0_20px_rgba(124,58,237,0.2)]">
+                            {/* Header */}
                             <div className="px-4 py-3 border-b border-[#2a2a40] bg-gradient-to-r from-purple-500/10 to-blue-500/10">
                                 <p className="text-sm font-medium text-white">
                                     {user.firstName} {user.lastName || ''}
                                 </p>
-                                <p className="text-xs text-gray-400 truncate">
-                                    {user.email}
-                                </p>
+                                <p className="text-xs text-gray-400 truncate">{user.email}</p>
                             </div>
-                            
+
+                            {/* Profile Link */}
                             <div className="py-1">
-                                <button onClick={()=>navigate("/profile")} className="w-full px-4 py-2 text-sm text-gray-300 hover:bg-[#252540] hover:text-white transition-colors duration-150 flex items-center group">
-                                    <User  className="w-4 h-4 mr-3 group-hover:text-purple-400 transition-colors" />
+                                <button
+                                    onClick={() => navigate("/profile")}
+                                    className="w-full px-4 py-2 text-sm text-gray-300 hover:bg-[#252540] hover:text-white transition-colors duration-150 flex items-center group"
+                                >
+                                    <User className="w-4 h-4 mr-3 group-hover:text-purple-400 transition-colors" />
                                     Profile
                                 </button>
-                                
                             </div>
-                            
+
+                            {/* Logout */}
                             <div className="py-1 border-t border-[#2a2a40]">
                                 <button
                                     onClick={handleLogout}
