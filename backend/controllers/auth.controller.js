@@ -128,10 +128,10 @@ export const login = async (req, res) => {
 
 export const updateUser = async (req, res) => {
     // get the data from the user through frontend
-    const { firstName, lastName, email, courseName, section, semester, rollNumber } = req.body;
+    const { firstName, lastName, email, courseName, section, semester, rollNumber, password } = req.body;
     
     try {
-        // check if all fields are present
+        // check if all fields are present (except password, which is optional)
         if(!firstName || !lastName || !email || !courseName || !section || !semester || !rollNumber) {
             return res.status(400).json({
                 msg: "All fields are required"
@@ -147,12 +147,33 @@ export const updateUser = async (req, res) => {
                 msg: "Invalid data",
             });
         }
+
+        if (courseName !== "Btech" && courseName !== "Mtech") {
+          return res.status(403).json({
+            msg: "Class not Defined"
+          });
+        }
+
+        const validSemesters = ["1","2","3","4","5","6","7","8"];
+        if (!validSemesters.includes(semester)) {
+          return res.status(403).json({
+            msg: "Semester not Defined"
+          });
+        }
+
+        const validSections = ["CE","A","B","C","D"];
+        if (!validSections.includes(section)) {
+          return res.status(403).json({
+            msg: "Section not Defined"
+          });
+        }
+
         // Before saving or updating the user:
         if (req.body.classId === "") {
           delete req.body.classId;
         }
-        // updating the user
-        const updatedUser = await User.findByIdAndUpdate(req.user.id, {
+        // Prepare update object
+        const updateObj = {
             firstName,
             lastName,
             email,
@@ -160,7 +181,14 @@ export const updateUser = async (req, res) => {
             section,
             semester,
             rollNumber
-        }, { new: true });
+        };
+        // If password is provided, hash and add to update
+        if (password) {
+            const hashedPassword = await bcrypt.hash(password, 10);
+            updateObj.password = hashedPassword;
+        }
+        // updating the user
+        const updatedUser = await User.findByIdAndUpdate(req.userId, updateObj, { new: true });
     
         res.status(200).json({
             msg: "User updated successfully",
