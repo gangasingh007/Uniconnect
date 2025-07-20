@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion'
 import React, { useState } from 'react';
 import { User, Edit3, Mail, GraduationCap, Calendar, Hash, Book, Users, X, Save, Eye, EyeOff, Home, ArrowRightLeft, ArrowLeft, UserRoundCheck } from 'lucide-react';
 import { useRecoilState } from 'recoil';
@@ -89,6 +90,11 @@ const ProfilePage = () => {
     };
 
     return (
+       <> <motion.div
+       initial={{ opacity: 0, y: 40 }}
+       animate={{ opacity: 1, y: 0 }}
+       transition={{ duration: 0.8, delay: 0.4, ease: 'easeOut' }}
+     >
         <div className="min-h-screen  p-6">
             <div className="max-w-4xl mx-auto">
                 {/* Header */}
@@ -372,6 +378,8 @@ const ProfilePage = () => {
                 </div>
             )}
         </div>
+        </motion.div>
+        </>
     );
 };
 

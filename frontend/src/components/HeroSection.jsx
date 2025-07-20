@@ -4,10 +4,12 @@ import Typewriter from 'typewriter-effect';
 import { userAtom } from '../atoms/userAtom';
 import Navbar from './Navbar';
 import { CalendarCheck2, LibraryBig } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const HeroSection = () => {
   const [animationDone, setAnimationDone] = useState(false);
   const user = useRecoilValue(userAtom);
+  const navigate = useNavigate();
 
   const userClass = user?.courseName
     ? `${user.courseName} - Section ${user.section}, Semester ${user.semester}`
@@ -95,10 +97,10 @@ const HeroSection = () => {
 
             {/* Enhanced Action Buttons */}
             <div className="flex flex-wrap gap-4 mt-6">
-              <button className="group relative flex items-center gap-3 bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 text-white px-8 py-4 rounded-2xl hover:from-blue-700 hover:via-purple-700 hover:to-indigo-700 transition-all duration-300 shadow-2xl shadow-purple-900/40 hover:shadow-purple-900/60 transform hover:-translate-y-1 hover:scale-105">
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-purple-400 rounded-2xl opacity-0 group-hover:opacity-20 blur transition-opacity duration-300"></div>
+              <button  className="group relative flex items-center gap-3 bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 text-white px-8 py-4 rounded-2xl hover:from-blue-700 hover:via-purple-700 hover:to-indigo-700 transition-all duration-300 shadow-2xl shadow-purple-900/40 hover:shadow-purple-900/60 transform hover:-translate-y-1 hover:scale-105">
+                <div  className="absolute inset-0 bg-gradient-to-r from-blue-400 to-purple-400 rounded-2xl opacity-0 group-hover:opacity-20 blur transition-opacity duration-300"></div>
                 <LibraryBig className="w-6 h-6 relative z-10 transform group-hover:rotate-6 transition-transform duration-300" />
-                <span className="relative z-10 font-semibold text-lg">Subjects</span>
+                <span onClick={()=>navigate("/syllabus")} className="relative z-10 font-semibold text-lg">Syllabus</span>
                 <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </button>
               

@@ -209,10 +209,7 @@ const Subjects = () => {
                       {subject.subjectTeacher}
                     </p>
                   </div>
-                </div>
-
-                {/* Bottom accent */}
-                <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 via-indigo-500 to-purple-600 rounded-b-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                </div>              
               </div>
             </div>
           ))}

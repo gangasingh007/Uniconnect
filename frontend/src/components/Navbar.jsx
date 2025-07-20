@@ -67,13 +67,13 @@ const Navbar = () => {
                                 {user.firstName}
                             </span>
                         )}
-
                         {/* Arrow */}
                         <ChevronDown
                             className={`text-gray-400 w-4 h-4 transition-transform duration-200 ${
                                 dropdownOpen ? 'rotate-180' : ''
                             }`}
                         />
+                    
                     </button>
 
                     {/* Dropdown */}

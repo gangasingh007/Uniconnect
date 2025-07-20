@@ -13,6 +13,7 @@ import axios from 'axios'
 import { userAtom } from './atoms/userAtom'
 import ProfilePage from './pages/ProfilePage'
 
+
 const App = () => {
   const [loading, setLoading] = useRecoilState(loadingAtom);
   const [error, setError] = useRecoilState(errorAtom);
