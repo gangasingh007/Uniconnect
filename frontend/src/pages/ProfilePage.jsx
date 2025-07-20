@@ -46,7 +46,7 @@ const ProfilePage = () => {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`
+                    "authorization": `Bearer ${token}`
                 },
                 body: JSON.stringify(formData)
             });
@@ -119,7 +119,7 @@ const ProfilePage = () => {
                                 <h2 className="text-2xl font-bold text-white mb-1">
                                     {(user?.firstName || '') + ' ' + (user?.lastName || '')}
                                 </h2>
-                                <p className="text-gray-400 flex items-center">
+                                <p className="text-gray-400 flex items-center overflow-hidden">
                                     <Mail className="w-4 h-4 mr-2" />
                                     {user?.email || ''}
                                 </p>
