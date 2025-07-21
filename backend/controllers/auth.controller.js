@@ -127,21 +127,18 @@ export const login = async (req, res) => {
 };
 
 export const updateUser = async (req, res) => {
-    // get the data from the user through frontend
     const { firstName, lastName, email, courseName, section, semester, rollNumber, password } = req.body;
     
     try {
-        // check if all fields are present (except password, which is optional)
         if(!firstName || !lastName || !email || !courseName || !section || !semester || !rollNumber) {
             return res.status(400).json({
                 msg: "All fields are required"
             });
         }
-        
-        // validate the data using zod
+
         const payload = req.body;
         const parsedPayload = userUpdateValidator.safeParse(payload);
-        
+
         if (!parsedPayload.success) {
             return res.status(400).json({
                 msg: "Invalid data",
@@ -168,10 +165,36 @@ export const updateUser = async (req, res) => {
           });
         }
 
-        // Before saving or updating the user:
-        if (req.body.classId === "") {
-          delete req.body.classId;
+        // Fetch the current user
+        const user = await User.findById(req.userId);
+        if (!user) {
+            return res.status(404).json({ msg: "User not found" });
         }
+
+        // Check if class info has changed
+        const classChanged =
+            user.courseName !== courseName ||
+            user.section !== section ||
+            user.semester !== semester;
+
+        let newClassId = user.classId;
+
+        if (classChanged) {
+            // Remove user from old class
+            if (user.classId) {
+                await Class.findByIdAndUpdate(
+                    user.classId,
+                    { $pull: { students: user._id } }
+                );
+            }
+
+            // Add user to new class (create if not exists)
+            newClassId = await getOrCreateClassId(courseName, section, semester, user._id);
+
+            // Update user's classId
+            user.classId = newClassId;
+        }
+
         // Prepare update object
         const updateObj = {
             firstName,
@@ -180,16 +203,18 @@ export const updateUser = async (req, res) => {
             courseName,
             section,
             semester,
-            rollNumber
+            rollNumber,
+            classId: newClassId
         };
-        // If password is provided, hash and add to update
+
         if (password) {
             const hashedPassword = await bcrypt.hash(password, 10);
             updateObj.password = hashedPassword;
         }
-        // updating the user
+
+        // Update the user
         const updatedUser = await User.findByIdAndUpdate(req.userId, updateObj, { new: true });
-    
+
         res.status(200).json({
             msg: "User updated successfully",
             user: updatedUser

@@ -46,7 +46,7 @@ const App = () => {
   
 
   return (
-    <>
+    <div className='animated-bg'>
     <Toaster
         position="bottom-right"
         toastOptions={{
@@ -88,7 +88,7 @@ const App = () => {
         </ProtectedRoute>} />
       </Routes>
     </BrowserRouter>}
-    </>
+    </div>
   )
 }
 
