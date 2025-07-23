@@ -12,6 +12,7 @@ import Loader from './components/Loader'
 import axios from 'axios'
 import { userAtom } from './atoms/userAtom'
 import ProfilePage from './pages/ProfilePage'
+import SubjectPage from './pages/SubjectPage'
 
 
 const App = () => {
@@ -85,6 +86,9 @@ const App = () => {
         <Route path="/landing" element={<LandingPage />} />
         <Route path='/profile' element={<ProtectedRoute>
           <ProfilePage></ProfilePage>
+        </ProtectedRoute>} />
+        <Route path='/subject' element={<ProtectedRoute>
+          <SubjectPage></SubjectPage>
         </ProtectedRoute>} />
       </Routes>
     </BrowserRouter>}
