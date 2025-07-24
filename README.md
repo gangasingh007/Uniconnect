@@ -1,1 +1,1 @@
-ON hold for a sometime
+ON hold for sometime
