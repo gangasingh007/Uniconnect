@@ -196,7 +196,7 @@ const ProfilePage = () => {
                     />
                     
                     {/* Modal */}
-                    <div className="relative bg-[#1f1f35] border border-[#3a3a50] rounded-2xl p-8 w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl transform transition-all duration-300 scale-100">
+                    <div className="relative bg-[#1f1f35] border border-[#3a3a50] rounded-2xl p-7 w-full max-w-2xl max-h-[95vh] overflow-y-auto shadow-2xl transform transition-all duration-300 scale-100">
                         {/* Modal Header */}
                         <div className="flex items-center justify-between mb-6">
                             <h2 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-400">

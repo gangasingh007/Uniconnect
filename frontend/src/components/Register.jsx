@@ -73,7 +73,7 @@ const Register = () => {
         </div>
 
         {/* Form */}
-        <div className="space-y-6">
+        <div className="space-y-9">
           <div className="bg-slate-1000/50 backdrop-blur-sm ">
             {/* Name Fields */}
             <div className="grid grid-cols-2 gap-4 mb-4">

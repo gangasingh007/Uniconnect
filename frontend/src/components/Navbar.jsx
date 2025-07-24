@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { LogOut, User, ChevronDown, BookOpenCheck, CalendarClock } from 'lucide-react';
+import { LogOut, User, ChevronDown, BookOpenCheck, CalendarClock, CalendarClockIcon, AlarmClockCheck } from 'lucide-react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { userAtom } from '../atoms/userAtom';
 import { loadingAtom } from '../atoms/states.atom';
@@ -79,7 +79,7 @@ const Navbar = () => {
                   onClick={() => navigate("/profile")}
                   className="w-full px-4 py-2 text-sm text-gray-300 hover:bg-[#252540] hover:text-white transition-colors duration-150 flex items-center group"
                 >
-                  <User className="w-4 h-4 mr-3 group-hover:text-purple-400 transition-colors" />
+                  <User className="w-4 h-4 mr-3 text-orange-400 group-hover:text-purple-400 transition-colors" />
                   Profile
                 </button>
               </div>
@@ -101,6 +101,15 @@ const Navbar = () => {
                 >
                   <CalendarClock className="w-4 h-4 mr-3 text-blue-400 group-hover:text-blue-300" />
                   View Datesheet
+                </button>
+              </div>
+
+              <div className="py-1">
+                <button
+                  className="w-full px-4 py-2 text-sm text-gray-300 hover:bg-[#252540] hover:text-white transition-colors duration-150 flex items-center group"
+                >
+                  <AlarmClockCheck className="w-4 h-4 mr-3 text-green-400 group-hover:text-blue-300" />
+                  View Time Table
                 </button>
               </div>
 
