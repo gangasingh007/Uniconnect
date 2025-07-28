@@ -241,6 +241,4 @@ export const getMe = async (req, res) => {
         console.error("Error fetching user:", error.message);
         res.status(500).json({ error: { message: "Internal server error" } });
     }
-}
-
-;
+};
