@@ -49,32 +49,71 @@ const App = () => {
   return (
     <div className='animated-bg'>
     <Toaster
-        position="bottom-right"
-        toastOptions={{
-          duration: 4000,
-          style: {
-            background: 'linear-gradient(135deg, #1e1e3f72,#1e1e3f72)',
-            color: '#e2e8f0',
-            border: '1px solid #7c3aed53',
-            padding: '12px 16px',
-            borderRadius: '12px',
-            boxShadow: '0 0 2px rgba(124, 58, 237, 0.3)',
-            fontWeight: 500,
-          },
-          success: {
-            iconTheme: {
-              primary: '#4ade80',
-              secondary: '#1e1e2f',
-            },
-          },
-          error: {
-            iconTheme: {
-              primary: '#f87171',
-              secondary: '#1e1e2f',
-            },
-          },
-        }}
-      />
+  position="top"
+  toastOptions={{
+    duration: 4000,
+    style: {
+      background: 'linear-gradient(135deg, #1e1e3f99, #2d1b6944)',
+      color: '#e2e8f0',
+      border: '1px solid #7c3aed66',
+      padding: '16px 20px',
+      borderRadius: '16px',
+      boxShadow: '0 8px 32px rgba(124, 58, 237, 0.15), 0 2px 8px rgba(0, 0, 0, 0.2)',
+      fontWeight: 500,
+      fontSize: '14px',
+      backdropFilter: 'blur(12px)',
+      WebkitBackdropFilter: 'blur(12px)',
+      minWidth: '320px',
+      maxWidth: '500px',
+      wordBreak: 'break-word',
+      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+    },
+    success: {
+      style: {
+        background: 'linear-gradient(135deg, #1e1e3f99, #065f4644)',
+        border: '1px solid #10b98166',
+        boxShadow: '0 8px 32px rgba(16, 185, 129, 0.15), 0 2px 8px rgba(0, 0, 0, 0.2)',
+      },
+      iconTheme: {
+        primary: '#10b981',
+        secondary: '#1e1e2f',
+      },
+    },
+    error: {
+      style: {
+        background: 'linear-gradient(135deg, #1e1e3f99, #7f1d1d44)',
+        border: '1px solid #ef444466',
+        boxShadow: '0 8px 32px rgba(239, 68, 68, 0.15), 0 2px 8px rgba(0, 0, 0, 0.2)',
+      },
+      iconTheme: {
+        primary: '#ef4444',
+        secondary: '#1e1e2f',
+      },
+    },
+    loading: {
+      style: {
+        background: 'linear-gradient(135deg, #1e1e3f99, #374151)',
+        border: '1px solid #6b728066',
+        boxShadow: '0 8px 32px rgba(107, 114, 128, 0.15), 0 2px 8px rgba(0, 0, 0, 0.2)',
+      },
+      iconTheme: {
+        primary: '#6b7280',
+        secondary: '#1e1e2f',
+      },
+    },
+    className: '',
+    ariaProps: {
+      role: 'status',
+      'aria-live': 'polite',
+    },
+  }}
+  containerStyle={{
+    top: '20px',
+    zIndex: 9999,
+  }}
+  containerClassName="toast-container"
+/>
+
       {loading ? <Loader /> :
       <BrowserRouter>
       <Routes>
