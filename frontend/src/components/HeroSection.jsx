@@ -76,7 +76,7 @@ const HeroSection = () => {
   }
 
   return (
-    <section className="flex justify-center items-center mt-10 px-4 md:px-6 w-full min-h-[70vh] text-white relative overflow-hidden">
+    <section className="flex justify-center items-center mt-10 mb-10 px-4 md:px-6 w-full min-h-[70vh] text-white relative overflow-hidden">
       {/* Enhanced Background Effects */}
       <div className="absolute inset-0 -z-10 pointer-events-none">
         <motion.div 

@@ -1,32 +1,37 @@
 import mongoose from "mongoose";
 
-const courseSchema = new mongoose.Schema({
-    title: {
-        type: String,
-        required: true,
-        trim: true,
-        minlength: 3,
-        maxlength: 100
+const resourceSchema = new mongoose.Schema({
+    title : {
+        type : String,
+        required : true,
+        trim : true
     },
-    type : {
-        type: String,
-        required: true,
-        enum: ["file", "link"],
-        trim: true
+    link : {
+        type : String,
+        required : true,
+        trim : true
     },
-    fileType: {
-        type: String,
+    type : { 
+        type : String,
+        required : true,
+        enum : ["document","Yt-Link"]
     },
-    createdAt :{
-        type: Date,
-        default: Date.now
+    subject : { 
+        type : mongoose.Schema.Types.ObjectId,
+        ref : "Subject",
+        required : true
     },
-    uploadedBy: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        required: true
+    class : { 
+        type : mongoose.Schema.Types.ObjectId,
+        ref : "Class",
+        required : true
     },
-}, {timestamps: true});    
+    createdBy : { 
+        type : mongoose.Schema.Types.ObjectId,
+        ref : "User",
+        required : true
+    },
+},{timestamps:true})
 
-const Resource = mongoose.model("Resource", courseSchema);
+const Resource = mongoose.model("Resource",resourceSchema);
 export default Resource;

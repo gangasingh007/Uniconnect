@@ -7,18 +7,21 @@ import Login from './components/Login'
 import LandingPage from './pages/LandingPage'
 import toast, { Toaster } from 'react-hot-toast';
 import { errorAtom, loadingAtom } from './atoms/states.atom'
-import { useRecoilState } from 'recoil'
+import { useRecoilState, useSetRecoilState } from 'recoil'
 import Loader from './components/Loader'
 import axios from 'axios'
 import { userAtom } from './atoms/userAtom'
 import ProfilePage from './pages/ProfilePage'
 import SubjectPage from './pages/SubjectPage'
+import { classAtom } from './atoms/classAtom'
+import ResourcePage from './pages/ResourcePage'
 
 
 const App = () => {
   const [loading, setLoading] = useRecoilState(loadingAtom);
   const [error, setError] = useRecoilState(errorAtom);
   const [user, setuser] = useRecoilState(userAtom);
+  const setClassId = useSetRecoilState(classAtom)
   const token = localStorage.getItem("token")
   useEffect(() => {
     const fetchUser = async () => {
@@ -36,6 +39,7 @@ const App = () => {
         });
         const myuser = res.data.user
         setuser(myuser);
+        setClassId(myuser.classId);
       } catch (err) {
         setError("Failed to fetch user info");
       } finally {
@@ -126,8 +130,11 @@ const App = () => {
         <Route path='/profile' element={<ProtectedRoute>
           <ProfilePage></ProfilePage>
         </ProtectedRoute>} />
-        <Route path='/subject' element={<ProtectedRoute>
-          <SubjectPage></SubjectPage>
+        <Route path='/subjects' element={<ProtectedRoute>
+          <SubjectPage /> 
+        </ProtectedRoute>} />
+        <Route path="/subjects/resource" element={<ProtectedRoute>
+          <ResourcePage />
         </ProtectedRoute>} />
       </Routes>
     </BrowserRouter>}
