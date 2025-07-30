@@ -146,7 +146,7 @@ const ProfilePage = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-[#0a0a0f] via-[#141423] to-[#1a1a2e] p-4 sm:p-6">
+        <div className="min-h-screen  p-4 sm:p-6">
             <motion.div
                 initial={{ opacity: 0, y: 40 }}
                 animate={{ opacity: 1, y: 0 }}

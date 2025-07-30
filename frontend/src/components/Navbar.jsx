@@ -83,10 +83,6 @@ const Navbar = () => {
           UniConnect
         </div>
       </div>
-
-      {/* Center: Desktop Navigation Links */}
-      
-
       {/* Right: Profile & Mobile Menu */}
       <div className="flex items-center space-x-3">
         {/* Mobile Menu Button */}
