@@ -28,6 +28,7 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import Loader from '../components/Loader';
 
+
 const ResourcePage = () => {
   const user = useRecoilValue(userAtom);
   const subjectId = useRecoilValue(subjectAtom);
@@ -286,13 +287,14 @@ const ResourcePage = () => {
   return (
     <>
       <Navbar />
-      <div className="min-h-screen  p-4 sm:p-6">
+      <div className="min-h-screen  p-4 sm:p-6 backdrop-blur-sm">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="max-w-7xl mx-auto"
+          className="max-w-7xl mx-auto "
         >
+          
           {/* Enhanced Header */}
           <motion.div
             className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-12 gap-6"

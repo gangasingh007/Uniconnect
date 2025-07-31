@@ -7,6 +7,8 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 import { loadingAtom } from '../atoms/states.atom';
 import Loader from './Loader';
+import InteractiveBackground from './InteractiveBackground';
+import { Eye, EyeOff } from 'lucide-react';
 
 const Register = () => {
   const [auth , setAuth] = useRecoilState(authAtom);
@@ -22,6 +24,7 @@ const Register = () => {
     rollNumber: ''
   });
   const [loading, setloading] = useRecoilState(loadingAtom);
+  const [showPassword, setShowPassword] = useState(false);
   
 
   const handleChange = (e) => {
@@ -61,13 +64,13 @@ const Register = () => {
       transition={{ duration: 0.6, ease: 'easeOut' }}
     >
       <motion.div
-        className="w-full max-w-md rounded-2xl p-6 border border-slate-500/50"
+        className="w-full backdrop-blur-sm max-w-md rounded-2xl p-6 border border-slate-500/50"
         initial={{ scale: 0.95, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ duration: 0.5, delay: 0.2 }}
       >
         {/* Header */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-8  backdrop-blur-sm">
           <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent mb-2">UniConnect</h1>
           <h2 className="text-2xl font-semibold text-white mb-2">Create Account</h2>
         </div>
@@ -76,7 +79,7 @@ const Register = () => {
         <div className="space-y-9">
           <div className="bg-slate-1000/50 backdrop-blur-sm ">
             {/* Name Fields */}
-            <div className="grid grid-cols-2 gap-4 mb-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-2">
                   First Name
@@ -123,24 +126,33 @@ const Register = () => {
               />
             </div>
 
-            {/* Password */}
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                Password
-              </label>
-              <input
-                type="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                className="w-full px-4 py-3 bg-slate-800/50 border border-slate-800 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all"
-                placeholder="Create a strong password"
-                required
-              />
-            </div>
+           {/* Password */}
+                      <div className="mb-6">
+                        <label className="block text-sm font-medium text-gray-300 mb-2">
+                          Password
+                        </label>
+                        <div className="relative">
+                          <input
+                            type={showPassword ? 'text' : 'password'}
+                            name="password"
+                            value={formData.password}
+                            onChange={handleChange}
+                            className="w-full px-4 py-3 bg-slate-800/50 border border-slate-800 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all pr-10"
+                            placeholder="Enter your password"
+                            required
+                          />
+                          <button
+                            type="button"
+                            onClick={() => setShowPassword(!showPassword)}
+                            className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-white"
+                          >
+                            {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                          </button>
+                        </div>
+                      </div>
 
             {/* Academic Info */}
-            <div className="grid grid-cols-2 gap-4 mb-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-2">
                   Class
@@ -183,7 +195,7 @@ const Register = () => {
             </div>
 
             {/* Semester and Roll Number */}
-            <div className="grid grid-cols-2 gap-4 mb-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-2">
                   Semester

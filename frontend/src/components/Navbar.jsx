@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { LogOut, User, ChevronDown, BookOpenCheck, CalendarClock, AlarmClockCheck, Menu, X } from 'lucide-react';
+import { LogOut, User, ChevronDown, BookOpenCheck, CalendarClock, AlarmClockCheck, Menu, X, BookOpen } from 'lucide-react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { userAtom } from '../atoms/userAtom';
 import { loadingAtom } from '../atoms/states.atom';
@@ -45,7 +45,7 @@ const Navbar = () => {
   const navLinks = [
     { href: "Syllabus.html", icon: BookOpenCheck, label: "Syllabus", color: "purple" },
     { href: "Datesheet.html", icon: CalendarClock, label: "Datesheet", color: "blue" },
-    { href: "#", icon: AlarmClockCheck, label: "Timetable", color: "green" }
+    { href: "/subjects", icon: BookOpen, label: "Subjects", color: "green" }
   ];
 
   const getColorClasses = (color, isActive = false) => {
@@ -76,7 +76,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="w-full px-4 sm:px-6 py-4 flex items-center justify-between bg-gradient-to-r from-[#141423] via-[#1a1a2e] to-[#141423] border-b border-[#2a2a40] shadow-[0_4px_20px_rgba(0,0,0,0.3)] backdrop-blur-sm sticky top-0 z-40">
+    <nav className="w-full px-4 sm:px-6 py-4 flex items-center justify-between bg-gradient-to-r from-[#000000] via-[#07070f] to-[#01011b81] border-b border-[#2a2a40] shadow-[0_4px_20px_rgba(0,0,0,0.3)] backdrop-blur-sm sticky top-0 z-40">
       {/* Left: Logo */}
       <div className="flex items-center">
         <div className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent drop-shadow-sm cursor-pointer hover:scale-105 transition-transform duration-300">
@@ -126,7 +126,7 @@ const Navbar = () => {
         <div className="relative" ref={dropdownRef}>
           <button
             onClick={() => setDropdownOpen(!dropdownOpen)}
-            className="flex items-center space-x-2 sm:space-x-3 px-2 sm:px-3 py-2 rounded-lg bg-[#151528]/80 hover:bg-[#1f1f35] border border-[#2a2a40] hover:border-[#3a3a50] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 backdrop-blur-sm hover:shadow-lg hover:shadow-purple-500/10"
+            className="flex items-center space-x-2 sm:space-x-3 px-2 sm:px-3 py-2 rounded-2xl bg-black-500/10 hover:bg-[#1f1f35] border border-[#2a2a40] hover:border-[#3a3a50] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 backdrop-blur-sm hover:shadow-lg hover:shadow-purple-500/10"
           >
             <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-to-br from-purple-500 via-blue-500 to-pink-500 flex items-center justify-center text-white font-medium text-xs sm:text-sm shadow-lg ring-2 ring-purple-500/20">
               {user?.firstName?.charAt(0).toUpperCase() || user?.email?.charAt(0).toUpperCase() || 'U'}
