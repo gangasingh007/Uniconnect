@@ -76,7 +76,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="w-full px-4 sm:px-6 py-4 flex items-center justify-between bg-gradient-to-r from-[#000000] via-[#07070f] to-[#01011b81] border-b border-[#2a2a40] shadow-[0_4px_20px_rgba(0,0,0,0.3)] backdrop-blur-sm sticky top-0 z-40">
+    <nav className="w-full px-4 sm:px-6 py-4 flex items-center justify-between bg-gradient-to-r from-[#000000] via-[#07070f55] to-[#00000c81] border-b border-[#2a2a40] shadow-[0_4px_20px_rgba(0,0,0,0.3)] backdrop-blur-sm sticky top-0 z-40">
       {/* Left: Logo */}
       <div className="flex items-center">
         <div className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent drop-shadow-sm cursor-pointer hover:scale-105 transition-transform duration-300">

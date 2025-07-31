@@ -34,10 +34,10 @@ const Footer = () => {
   ];
 
   const socialLinks = [
-    { icon: Github, href: '#', label: 'GitHub' },
-    { icon: Twitter, href: '#', label: 'Twitter' },
-    { icon: Linkedin, href: '#', label: 'LinkedIn' },
-    { icon: Instagram, href: '#', label: 'Instagram' }
+    { icon: Github, href: 'https://github.com/gangasingh007', label: 'GitHub' },
+    { icon: Twitter, href: 'https://x.com/gangasingh1734', label: 'Twitter' },
+    { icon: Linkedin, href: 'https://www.linkedin.com/in/ganga-singh-0156b323a/', label: 'LinkedIn' },
+    { icon: Instagram, href: 'https://www.instagram.com/ganga.singh.007/', label: 'Instagram' }
   ];
 
   const features = [
@@ -215,7 +215,7 @@ const Footer = () => {
 
             {/* Social Links */}
             <div>
-              <p className="text-gray-400 text-sm mb-3">Follow us</p>
+              <p className="text-gray-400 text-sm mb-3">Follow</p>
               <div className="flex gap-3">
                 {socialLinks.map((social, index) => {
                   const Icon = social.icon;
@@ -230,6 +230,7 @@ const Footer = () => {
                       whileInView={{ opacity: 1, scale: 1 }}
                       transition={{ duration: 0.4, delay: index * 0.1 }}
                       viewport={{ once: true }}
+                      target='new'
                     >
                       <Icon className="w-4 h-4 group-hover:scale-110 transition-transform duration-300" />
                     </motion.a>

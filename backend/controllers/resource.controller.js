@@ -93,3 +93,37 @@ export const getResources = async (req,res)=>{
         res.status(500).json({ msg: "Server error.", error: error.message });
     }
 }
+
+
+
+export const uploadResource = async (req, res) => {
+  try {
+    const { title } = req.body;
+    const { classId, subjectId } = req.params;
+    const createdBy = req.user._id;
+
+    if (!req.file) {
+      return res.status(400).json({ message: "File is required" });
+    }
+
+    // ✅ Change URL to inline version
+    let fileUrl = req.file.path;
+    if (fileUrl.includes("/raw/upload/")) {
+      fileUrl = fileUrl.replace("/raw/upload/", "/raw/upload/fl_inline/");
+    }
+
+    const newResource = await Resource.create({
+      title,
+      link: fileUrl,
+      type: "document",
+      subject: subjectId,
+      class: classId,
+      createdBy,
+    });
+
+    res.status(201).json({ message: "Resource uploaded", resource: newResource });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};

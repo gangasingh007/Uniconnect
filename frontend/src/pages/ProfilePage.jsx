@@ -5,6 +5,8 @@ import { useRecoilState } from 'recoil';
 import { userAtom } from '../atoms/userAtom';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
+import Footer from '../components/Footer';
+import Navbar from '../components/Navbar';
 
 
 const ProfilePage = () => {
@@ -132,7 +134,8 @@ const ProfilePage = () => {
     }[color] || 'text-gray-400');
 
     return (
-        <div className="relative min-h-screen w-full text-white overflow-hidden">
+        <>
+            <div className="relative min-h-screen w-full text-white overflow-hidden">
             <div className="relative z-10 p-4 sm:p-6 lg:p-8">
                 <motion.div
                     initial={{ opacity: 0, y: 40 }}
@@ -166,7 +169,7 @@ const ProfilePage = () => {
 
                     {/* Main Profile Card */}
                     <motion.div 
-                        className="bg-black/20 border border-white/10 rounded-3xl p-6 sm:p-8 shadow-2xl backdrop-blur-lg relative overflow-hidden"
+                        className="bg-[#0f0f12] bg-fixed [background-image:radial-gradient(circle_at_10%_20%,rgba(30,64,175,0.15)_0%,transparent_30%),radial-gradient(circle_at_90%_80%,rgba(124,58,237,0.15)_0%,transparent_30%),radial-gradient(circle_at_50%_50%,rgba(79,70,229,0.08)_0%,transparent_50%)] border border-white/10 rounded-3xl p-6 sm:p-8 shadow-2xl backdrop-blur-lg relative overflow-hidden"
                         initial={{ opacity: 0, y: 30 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.8, delay: 0.6 }}
@@ -347,6 +350,8 @@ const ProfilePage = () => {
                 </AnimatePresence>
             </div>
         </div>
+        <Footer />
+        </>
     );
 };
 
