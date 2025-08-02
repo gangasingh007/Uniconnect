@@ -263,7 +263,7 @@ const SubjectPage = () => {
               <motion.div
                 key={subject._id}
                 onClick={() => handleClick(subject._id)}
-                className="group relative bg-gradient-to-br from-[#1f1f35] to-[#1a1a2e] backdrop-blur-xl rounded-3xl shadow-2xl hover:shadow-purple-500/10 transition-all duration-500 p-6 sm:p-8 border border-[#3a3a50] hover:border-purple-500/30 overflow-hidden"
+                className="group relative bg-gradient-to-br from-[#08080d] to-[#05050e] backdrop-blur-xl rounded-3xl shadow-2xl hover:shadow-purple-500/10 transition-all duration-500 p-6 sm:p-8 border border-[#3a3a50] hover:border-purple-500/30 overflow-hidden"
                 initial={{ opacity: 0, y: 30, scale: 0.95 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: -30, scale: 0.95 }}

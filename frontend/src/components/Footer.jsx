@@ -1,12 +1,12 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { 
-  Mail, 
-  Phone, 
-  MapPin, 
-  Github, 
-  Twitter, 
-  Linkedin, 
+import {
+  Mail,
+  Phone,
+  MapPin,
+  Github,
+  Twitter,
+  Linkedin,
   Instagram,
   BookOpen,
   Users,
@@ -17,8 +17,10 @@ import {
   Sparkles
 } from 'lucide-react';
 
+
 const Footer = () => {
   const currentYear = new Date().getFullYear();
+
 
   const quickLinks = [
     { name: 'Dashboard', href: '/' },
@@ -28,10 +30,12 @@ const Footer = () => {
     { name: 'Datesheet', href: 'Datesheet.html', external: true }
   ];
 
+
   const resources = [
     { name: 'Study Materials', href: '/subjects',target:null },
     { name: 'Academic Calendar', href: 'Calender.html',target:"new" },
   ];
+
 
   const socialLinks = [
     { icon: Github, href: 'https://github.com/gangasingh007', label: 'GitHub' },
@@ -40,19 +44,21 @@ const Footer = () => {
     { icon: Instagram, href: 'https://www.instagram.com/ganga.singh.007/', label: 'Instagram' }
   ];
 
+
   const features = [
     { icon: BookOpen, title: 'Access Subjects', description: 'Comprehensive learning resources' },
     { icon: Users, title: 'Community', description: 'Connect with peers and faculty (soon)' },
     { icon: Sparkles, title: 'AI summarization', description: 'Single Click Summarization' }
   ];
 
+
   return (
-    <footer className="relative bg-gradient-to-br from-[#0a0a0f] via-[#141423] to-[#1a1a2e] border-t border-[#2a2a40] overflow-hidden">
+    <footer className="relative bg-gradient-to-br from-[#0a0a0f] via-[#04040a] to-[#05050a] border-t border-[#2a2a40] overflow-hidden">
       {/* Background Effects */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute w-[400px] h-[400px] bg-gradient-to-r from-purple-500/5 via-blue-500/5 to-pink-500/5 blur-[100px] rounded-full -top-20 -left-20"></div>
         <div className="absolute w-[300px] h-[300px] bg-gradient-to-r from-blue-500/5 via-purple-500/5 to-cyan-500/5 blur-[80px] rounded-full -bottom-10 -right-10"></div>
-        
+       
         {/* Dot pattern */}
         <div className="absolute inset-0 opacity-[0.03]">
           <div
@@ -65,10 +71,11 @@ const Footer = () => {
         </div>
       </div>
 
+
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-16">
         {/* Main Footer Content */}
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-12 mb-12">
-          
+         
           {/* Brand Section */}
           <motion.div
             className="lg:col-span-1"
@@ -78,7 +85,7 @@ const Footer = () => {
             viewport={{ once: true }}
           >
             <div className="mb-6">
-              <motion.h3 
+              <motion.h3
                 className="text-3xl font-bold bg-gradient-to-r from-blue-400 via-purple-500 to-pink-400 bg-clip-text text-transparent mb-4"
                 whileHover={{ scale: 1.05 }}
                 transition={{ duration: 0.3 }}
@@ -86,10 +93,11 @@ const Footer = () => {
                 UniConnect
               </motion.h3>
               <p className="text-gray-400 text-sm leading-relaxed">
-                Empowering students with comprehensive academic resources, seamless connectivity, 
+                Empowering students with comprehensive academic resources, seamless connectivity,
                 and tools for educational excellence in the digital age.
               </p>
             </div>
+
 
             {/* Features Highlight */}
             <div className="space-y-3">
@@ -117,6 +125,7 @@ const Footer = () => {
               })}
             </div>
           </motion.div>
+
 
           {/* Quick Links */}
           <motion.div
@@ -152,6 +161,7 @@ const Footer = () => {
             </ul>
           </motion.div>
 
+
           {/* Resources */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -185,6 +195,7 @@ const Footer = () => {
             </ul>
           </motion.div>
 
+
           {/* Contact & Social */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -196,7 +207,7 @@ const Footer = () => {
               <Users className="w-4 h-4 text-green-400" />
               Connect
             </h4>
-            
+           
             {/* Contact Info */}
             <div className="space-y-4 mb-6">
               <div className="flex items-center gap-3 text-gray-400 text-sm">
@@ -212,6 +223,7 @@ const Footer = () => {
                 <span>Ludhiana, Punjab</span>
               </div>
             </div>
+
 
             {/* Social Links */}
             <div>
@@ -241,6 +253,7 @@ const Footer = () => {
           </motion.div>
         </div>
 
+
         {/* Bottom Section */}
         <motion.div
           className="pt-8 border-t border-[#2a2a40]"
@@ -260,12 +273,13 @@ const Footer = () => {
               </motion.div>
               <span>by - Ganga Singh</span>
             </div>
-            
+           
           </div>
         </motion.div>
       </div>
     </footer>
   );
 };
+
 
 export default Footer;
