@@ -278,8 +278,8 @@ const EditProfileModal = ({ isOpen, onClose, user, setUser }) => {
                     <motion.div 
                         className="relative w-full max-w-4xl max-h-[92vh] overflow-y-auto 
                                    rounded-3xl p-8 sm:p-10 shadow-2xl border border-white/10 
-                                   bg-gradient-to-br from-[#1a1a2e]/95 via-[#141427]/95 to-[#101020]/95
-                                   backdrop-blur-xl"
+                                   bg-black/30
+                                   backdrop-blur-sm"
                         initial={{ scale: 0.9, y: 30, opacity: 0 }}
                         animate={{ scale: 1, y: 0, opacity: 1 }}
                         exit={{ scale: 0.9, y: 30, opacity: 0 }}

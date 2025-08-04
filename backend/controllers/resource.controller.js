@@ -60,3 +60,33 @@ export const createYtresource = async (req, res)=>{
     }
 }
 
+export const getResources = async (req,res)=>{
+    try {
+        const { classId, subjectId } = req.params;
+
+        // Validate IDs
+        if (!mongoose.Types.ObjectId.isValid(classId) || !mongoose.Types.ObjectId.isValid(subjectId)) {
+            return res.status(400).json({ msg: "Invalid Class or Subject ID format." });
+        }
+
+        // Check if class and subject exist and are related
+        const classDoc = await Class.findById(classId);
+        if (!classDoc) {
+            return res.status(404).json({ msg: "Class not found." });
+        }
+
+        const subject = await Subject.findById(subjectId).populate('resources');
+        if (!subject) {
+            return res.status(404).json({ msg: "Subject not found." });
+        }
+
+        if (!classDoc.subject.includes(subject._id)) {
+            return res.status(400).json({ msg: "Subject does not belong to this class." });
+        }
+
+        res.status(200).json({ msg: "Resources fetched successfully.", resources: subject.resources });
+    } catch (error) {
+        console.error("Error fetching resources:", error);
+        res.status(500).json({ msg: "Server error.", error: error.message });
+    }
+}
