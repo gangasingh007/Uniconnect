@@ -119,7 +119,7 @@ const Register = () => {
 
                         <FormSection title="Academic Info" icon={Book}>
                             <div className="grid md:grid-cols-3 gap-4">
-                                <SelectField icon={Book} name="courseName" value={formData.courseName} onChange={handleChange} error={errors.courseName} required options={['B.Tech', 'M.Tech']} />
+                                <SelectField icon={Book} name="courseName" value={formData.courseName} onChange={handleChange} error={errors.courseName} required options={['Btech', 'Mtech']} />
                                 <SelectField icon={Users} name="section" value={formData.section} onChange={handleChange} error={errors.section} required options={['A', 'B', 'C', 'CE', 'D']} />
                                 <SelectField icon={Calendar} name="semester" value={formData.semester} onChange={handleChange} error={errors.semester} required options={['1', '2', '3', '4', '5', '6', '7', '8']} />
                             </div>
