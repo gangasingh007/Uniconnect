@@ -132,7 +132,7 @@ const HeroSection = () => {
                   transition={{ duration: 1.5, repeat: Infinity }}
                 />
                 <span className="text-lg font-mono font-bold text-gray-200">
-                  {currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+                  {currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit'})}
                 </span>
               </motion.div>
             </motion.header>
@@ -140,7 +140,7 @@ const HeroSection = () => {
             {/* ===== MAIN CONTENT: WELCOME & INFO ===== */}
             <main className="flex-1 flex flex-col items-center justify-center text-center py-4">
               <motion.h1
-                className="text-5xl sm:text-6xl md:text-7xl font-black mb-4 leading-tight"
+                className="text-5xl sm:text-6xl md:text-7xl font-black mb-2 leading-tight"
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.7, delay: 0.4, type: 'spring', stiffness: 100 }}
@@ -149,7 +149,7 @@ const HeroSection = () => {
                   Welcome Back,
                 </span>
                 <motion.span 
-                  className="block text-transparent bg-clip-text bg-gradient-to-r from-pink-400 via-purple-500 to-blue-400 mt-1"
+                  className="block text-transparent bg-clip-text bg-gradient-to-r from-pink-400 via-purple-500 to-blue-400 mt-1 pb-1"
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8, delay: 0.9 }}
