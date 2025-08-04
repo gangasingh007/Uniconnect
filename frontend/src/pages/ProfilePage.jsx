@@ -1,12 +1,11 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import React, { useState, useEffect } from 'react';
-import { User, Edit3, Mail, GraduationCap, Calendar, Hash, Book, Users, X, Save, Eye, EyeOff, Home, ArrowLeft, UserRoundCheck, CheckCircle2, AlertCircle, Lock, Sparkles, Camera } from 'lucide-react';
+import { User, Edit3, Mail, GraduationCap, Calendar, Hash, Book, Users, X, Eye, EyeOff, Home, ArrowLeft, UserRoundCheck, CheckCircle2, AlertCircle, Lock, Sparkles, Camera } from 'lucide-react';
 import { useRecoilState } from 'recoil';
 import { userAtom } from '../atoms/userAtom';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import Footer from '../components/Footer';
-import Navbar from '../components/Navbar';
 
 // Main Page Component
 const ProfilePage = () => {
