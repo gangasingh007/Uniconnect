@@ -4,7 +4,7 @@ import { userLoginValidator, userRegisterValidator, userUpdateValidator } from "
 import bcrypt from "bcryptjs";
 import Class from "../models/class.model.js";
 
-const adminRollNumbers = ["17022302118","17022302119","17022302126","17022302111"]; // Add more as needed
+const adminRollNumbers = ["17022302118","17022302119"]; // Add more as needed
 
 // Helper to find or create class and return its _id
 async function getOrCreateClassId(courseName, section, semester, userId) {

@@ -187,7 +187,7 @@ const MobileNav = ({ navLinks }) => {
                                         href={link.href}
                                         target={link.external ? "_blank" : "_self"}
                                         rel={link.external ? "noopener noreferrer" : ""}
-                                        className="flex items-center gap-4 p-4 text-xl font-semibold text-gray-300 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
+                                        className="bg-black/70 flex items-center gap-4 p-4 text-xl font-semibold text-gray-300 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
                                     >
                                         <link.icon className={`text-${link.color}-400`} size={24} />
                                         {link.label}

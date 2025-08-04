@@ -19,13 +19,12 @@ const ProfilePage = () => {
         { icon: Users, label: 'Section', value: user?.section ? `Section ${user.section}` : '', color: 'blue' },
         { icon: Calendar, label: 'Semester', value: user?.semester ? `${user.semester}th Semester` : '', color: 'green' },
         { icon: Hash, label: 'Roll Number', value: user?.rollNumber, color: 'pink' },
-        { icon: UserRoundCheck, label: 'Role', value: user?.role, color: 'orange' },
-        { icon: Book, label: 'Total Subjects', value: user?.subjects?.length || 0, color: 'teal' },
+        { icon: UserRoundCheck, label: 'Role', value: user?.role, color: 'orange' }
     ];
 
     return (
         <>
-            <div className="relative min-h-screen w-full text-white bg-[#0a0a0f] overflow-hidden">
+            <div className="relative min-h-screen w-full text-white  overflow-hidden">
                 {/* Enhanced Animated Background */}
                 <div className="absolute inset-0 -z-10 pointer-events-none">
                     <div className="absolute w-[500px] h-[500px] bg-gradient-to-r from-purple-600/15 via-blue-600/15 to-pink-600/15 blur-[120px] rounded-full -top-40 -left-40 animate-pulse"></div>

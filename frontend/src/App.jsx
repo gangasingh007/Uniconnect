@@ -15,7 +15,7 @@ import ProfilePage from './pages/ProfilePage'
 import SubjectPage from './pages/SubjectPage'
 import { classAtom } from './atoms/classAtom'
 import ResourcePage from './pages/ResourcePage'
-import UploadResource from './components/UploadResource'
+
 
 
 const App = () => {
@@ -136,9 +136,6 @@ const App = () => {
         </ProtectedRoute>} />
         <Route path="/subjects/resource" element={<ProtectedRoute>
           <ResourcePage />
-        </ProtectedRoute>} />
-        <Route path="/upload" element={<ProtectedRoute>
-          <UploadResource />
         </ProtectedRoute>} />
       </Routes>
     </BrowserRouter>}

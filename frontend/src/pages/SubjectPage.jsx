@@ -9,7 +9,6 @@ import Footer from '../components/Footer';
 import Navbar from '../components/Navbar';
 import { subjectAtom } from '../atoms/subjectAtom';
 import { useNavigate } from 'react-router-dom';
-;
 
 const SubjectPage = () => {
   const user = useRecoilValue(userAtom);

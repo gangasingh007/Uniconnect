@@ -87,7 +87,7 @@ const LandingPage = () => {
 
 
   return (
-    <div className="min-h-screen  text-white">
+    <div className="min-h-screen text-white">
       <InteractiveBackground />
       {/* Navigation */}
       <nav className="fixed top-0 w-full bg-gray-1000/95 backdrop-blur-sm border-b border-gray-900 z-50">
