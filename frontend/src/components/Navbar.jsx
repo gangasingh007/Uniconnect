@@ -42,9 +42,6 @@ const Navbar = () => {
                     : 'linear-gradient(135deg, rgba(0,0,0,0.4) 0%, rgba(16,16,40,0.6) 50%, rgba(30,16,50,0.4) 100%)'
             }}
         >
-            {/* Animated background particles */}
-           
-
             {/* Left: Logo */}
             <Logo scrolled={scrolled} />
             
