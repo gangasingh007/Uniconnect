@@ -90,3 +90,115 @@ export const getResources = async (req,res)=>{
         res.status(500).json({ msg: "Server error.", error: error.message });
     }
 }
+
+export const deleteResource = async (req,res) => {
+    const classId = req.params.classId;
+    const subjectId = req.params.subjectId;
+    const resourceId = req.params.resourceId;
+    const userId = req.userId; // from the authmiddleware
+
+    try {
+        // check for the valid class id
+    const isvalidclass = await Class.findById({
+        _id : classId
+    })
+    if(!isvalidclass){
+        return res.status(401).json({
+            msg : "Class dont exist"
+        })
+    }
+
+    // check for the valid subject id 
+    const isvalidsubject = await Subject.findById({
+        _id : subjectId
+    })
+    if(!isvalidsubject){
+        return res.status(401).json({
+            msg : "Subject dont exist"
+        })
+    }
+
+    // check for the valid resource id
+    const isvalidresource = await Resource.findById({
+        _id : resourceId
+    })
+    if(!isvalidresource){
+        return res.status(401).json({
+            msg : "Resource dont exist"
+        })
+    }
+
+    // delete the resource 
+    await Resource.findByIdAndDelete({
+        _id : resourceId
+    })
+
+    res.status(200).json({
+        msg : "The resource has been deleted successfully"
+    })
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            msg : "Server error"
+        })
+    }
+}
+
+export const updateResource = async (req,res) => {
+    const classId = req.params.classId;
+    const subjectId = req.params.subjectId;
+    const resourceId = req.params.resourceId;
+    const userId = req.userId; // from the authmiddleware
+    const { title, link } = req.body;
+
+    try {
+        const isVaildClass = await Class.findById({
+            _id : classId
+        })
+        if(!isVaildClass){
+            return res.status(401).json({
+                msg : "Class dont exist"
+            })
+        }
+
+        const isValidSubject = await Subject.findById({
+            _id : subjectId
+        })
+
+        if(!isValidSubject){
+            res.status(401).json({
+                msg : "Subject dont exist"
+            })
+        }
+        const isValidResource = await Resource.findById({
+            _id : resourceId
+        })
+
+        if(!isValidResource){
+            res.status(401).json({
+                msg : "Resource dont exist"
+            })
+        }
+
+        // update the resource 
+        const updatedResource = await Resource.findByIdAndUpdate({
+            _id : resourceId
+        },{
+            title,
+            link
+        },{
+            new : true
+        })
+
+        res.status(200).json({
+            msg : "The resource has been updated successfully",
+            resource : updatedResource
+        })
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({
+            msg : "Server error"
+        })
+    }
+}

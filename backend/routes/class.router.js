@@ -7,5 +7,6 @@ const router = express.Router();
 
 router.get("/getClass/:id",authMiddleware,getclass)
 router.get("/getStudents/:id",authMiddleware,getStudents)
+router.get("/getClass",authMiddleware,)
 
 export default router;

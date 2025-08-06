@@ -1,5 +1,6 @@
 import Subject from "../models/Subject.model.js";
 import Class from "../models/class.model.js";
+import Resource from "../models/resource.model.js";
 
 export const createSubject = async (req, res) => {
     try {
@@ -61,6 +62,12 @@ export const deleteSubject = async (req,res) => {
             { $pull: { subject: subjectId } },
             { new: true }
         );
+
+        // delete the resources from of that Subject
+        await Resource.deleteMany({
+            subject: subjectId
+        });
+
 
         if (!updatedClass) {
             return res.status(404).json({
