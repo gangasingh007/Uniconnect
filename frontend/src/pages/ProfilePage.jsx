@@ -89,7 +89,7 @@ const PageHeader = ({ navigate }) => (
     >
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
             <div>
-                <h1 className="text-4xl sm:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-500 to-pink-400 drop-shadow-[0_0_15px_rgba(168,85,247,0.3)] mb-2">
+                <h1 className="text-4xl pb-2 sm:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-500 to-pink-400 drop-shadow-[0_0_15px_rgba(168,85,247,0.3)] mb-2">
                     Profile Settings
                 </h1>
                 <p className="text-lg text-gray-400 max-w-md">Manage your account information, preferences, and academic details.</p>
