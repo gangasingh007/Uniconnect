@@ -3,6 +3,7 @@ import Resource from "../models/resource.model.js";
 import Class from "../models/class.model.js";
 import mongoose from "mongoose";
 import { createResourceSchema } from "../types/resource.validatior.js";
+import User from "../models/user.model.js";
 
 export const createYtresource = async (req, res)=>{
     try {
@@ -51,9 +52,11 @@ export const createYtresource = async (req, res)=>{
              });
         subject.resources.push(newResource._id);
         await subject.save();
+            
+        const user = User.findById(createdBy);
 
         // Send success response
-        res.status(201).json({ msg: "YouTube resource created and added to subject successfully.", resource: newResource });
+        res.status(201).json({ msg: "YouTube resource created and added to subject successfully.", resource: newResource,cretedBy : user });
     } catch (error) {
         console.error("Error creating YouTube resource:", error);
         res.status(500).json({ msg: "Server error.", error: error.message });

@@ -86,7 +86,7 @@ const Footer = () => {
           >
             <div className="mb-6">
               <motion.h3
-                className="text-3xl font-bold bg-gradient-to-r from-blue-400 via-purple-500 to-pink-400 bg-clip-text text-transparent mb-4"
+                className="text-3xl font-bold bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent mb-4"
                 whileHover={{ scale: 1.05 }}
                 transition={{ duration: 0.3 }}
               >

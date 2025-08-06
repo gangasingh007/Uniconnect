@@ -15,9 +15,10 @@ import {
   Calendar,
   User,
   CheckCircle2,
-  ArrowRight,
   Sparkles,
-  UploadCloud
+  UploadCloud,
+  Pencil,
+  Trash2
 } from 'lucide-react';
 
 import { userAtom } from '../atoms/userAtom';
@@ -25,7 +26,6 @@ import { subjectAtom } from '../atoms/subjectAtom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import Loader from '../components/Loader';
-import InteractiveBackground from '../components/InteractiveBackground';
 
 const ResourcePage = () => {
   const user = useRecoilValue(userAtom);
@@ -35,7 +35,12 @@ const ResourcePage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [activeTab, setActiveTab] = useState('Yt-Link');
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  
+  // Modal State Management
+  const [isFormModalOpen, setIsFormModalOpen] = useState(false);
+  const [resourceToEdit, setResourceToEdit] = useState(null);
+  const [resourceToDelete, setResourceToDelete] = useState(null);
+
   const [newResource, setNewResource] = useState({ title: '', link: '', file: null });
   const [searchTerm, setSearchTerm] = useState('');
   const [validationErrors, setValidationErrors] = useState({});
@@ -46,14 +51,23 @@ const ResourcePage = () => {
       errors.title = 'Title must be at least 3 characters.';
     }
 
-    if (activeTab === 'Yt-Link') {
+    // Determine resource type from edit state or active tab
+    const resourceType = resourceToEdit ? resourceToEdit.type : activeTab;
+
+    if (resourceType === 'Yt-Link') {
       if (!newResource.link.trim()) errors.link = 'Link is required.';
       else if (!/^https?:\/\/(www\.)?(youtube\.com|youtu\.be)\/.+/.test(newResource.link)) {
         errors.link = 'Please enter a valid YouTube URL.';
       }
-    } else {
-      if (!newResource.file) errors.file = 'A file is required.';
-      else if (newResource.file.size > 10 * 1024 * 1024) errors.file = 'File size cannot exceed 10MB.';
+    } else { // Document type
+      // File validation is only required when adding a new document.
+      // When editing, the user might not want to change the file.
+      if (!resourceToEdit && !newResource.file) {
+        errors.file = 'A file is required.';
+      }
+      if (newResource.file && newResource.file.size > 10 * 1024 * 1024) {
+        errors.file = 'File size cannot exceed 10MB.';
+      }
     }
     
     setValidationErrors(errors);
@@ -92,41 +106,88 @@ const ResourcePage = () => {
     }
 
     const token = localStorage.getItem('token');
-    const toastId = toast.loading(`Adding ${activeTab === 'Yt-Link' ? 'link' : 'document'}...`);
+    const toastId = toast.loading(`${resourceToEdit ? 'Updating' : 'Adding'} resource...`);
+    const resourceType = resourceToEdit ? resourceToEdit.type : activeTab;
 
     try {
-      if (activeTab === 'Yt-Link') {
-        await axios.post(
-          `http://localhost:3000/api/v1/resource/${user.classId}/${subjectId}`,
+      if (resourceToEdit) { // UPDATE LOGIC
+        // Endpoint: router.put("/:subjectId/:classId/:resourceId",...)
+        const updateUrl = `http://localhost:3000/api/v1/resource/${subjectId}/${user.classId}/${resourceToEdit._id}`;
+        // NOTE: This assumes you are only updating text fields (title/link).
+        // Updating a file via a PUT request with multipart/form-data is more complex and would require changes here and on the backend.
+        await axios.put(
+          updateUrl,
           { title: newResource.title, link: newResource.link },
           { headers: { authorization: `Bearer ${token}` } }
         );
-      } else {
-        const formData = new FormData();
-        formData.append('title', newResource.title);
-        formData.append('file', newResource.file);
-        await axios.post(
-          `http://localhost:3000/api/v1/resource/upload/${user.classId}/${subjectId}`,
-          formData,
-          { headers: { 'Content-Type': 'multipart/form-data', 'authorization': `Bearer ${token}` }}
-        );
+      } else { // ADD LOGIC (existing)
+        if (resourceType === 'Yt-Link') {
+          await axios.post(
+            `http://localhost:3000/api/v1/resource/${user.classId}/${subjectId}`,
+            { title: newResource.title, link: newResource.link },
+            { headers: { authorization: `Bearer ${token}` } }
+          );
+        } else {
+          const formData = new FormData();
+          formData.append('title', newResource.title);
+          formData.append('file', newResource.file);
+          await axios.post(
+            `http://localhost:3000/api/v1/resource/upload/${user.classId}/${subjectId}`,
+            formData,
+            { headers: { 'Content-Type': 'multipart/form-data', 'authorization': `Bearer ${token}` }}
+          );
+        }
       }
       
-      toast.success('Resource added successfully!', { id: toastId });
-      closeModal();
+      toast.success(`Resource ${resourceToEdit ? 'updated' : 'added'} successfully!`, { id: toastId });
+      closeFormModal();
       fetchResources();
     } catch (err) {
-      const errorMessage = err.response?.data?.message || 'Failed to add resource.';
+      const errorMessage = err.response?.data?.message || `Failed to ${resourceToEdit ? 'update' : 'add'} resource.`;
       toast.error(errorMessage, { id: toastId });
     }
   };
 
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setValidationErrors({});
-    setNewResource({ title: '', link: '', file: null });
+  const handleDeleteResource = async () => {
+    if (!resourceToDelete) return;
+    const token = localStorage.getItem('token');
+    const toastId = toast.loading('Deleting resource...');
+
+    try {
+      // Endpoint: router.delete("/:classId/:subjectId/:resourceId",...)
+      await axios.delete(
+        `http://localhost:3000/api/v1/resource/${user.classId}/${subjectId}/${resourceToDelete._id}`,
+        { headers: { authorization: `Bearer ${token}` } }
+      );
+      toast.success('Resource deleted successfully!', { id: toastId });
+      closeDeleteModal();
+      fetchResources();
+    } catch (err) {
+      const errorMessage = err.response?.data?.message || 'Failed to delete resource.';
+      toast.error(errorMessage, { id: toastId });
+    }
   };
+
+  // Modal control functions
+  const openFormModal = (resource = null) => {
+    if (resource) { // Editing existing resource
+      setResourceToEdit(resource);
+      setNewResource({ title: resource.title, link: resource.link || '', file: null });
+    } else { // Adding new resource
+      setResourceToEdit(null);
+      setNewResource({ title: '', link: '', file: null });
+    }
+    setIsFormModalOpen(true);
+  };
+  
+  const closeFormModal = () => {
+    setIsFormModalOpen(false);
+    setValidationErrors({});
+    setResourceToEdit(null);
+  };
+  
+  const openDeleteModal = (resource) => setResourceToDelete(resource);
+  const closeDeleteModal = () => setResourceToDelete(null);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -176,11 +237,11 @@ const ResourcePage = () => {
                     </div>
                     <div className="flex flex-col sm:flex-row gap-4 w-full lg:w-auto">
                         <div className="relative">
-                            <Search className="z-10 absolute left-4 top-1/2 transform -translate-y-1/2  w-5 h-5" />
+                            <Search className="z-10 absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5" />
                             <input type="text" placeholder="Search resources..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="pl-12 pr-4 py-3 bg-black/20 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50 backdrop-blur-sm transition-all duration-200 w-full sm:w-64" />
                         </div>
                         {user?.role === 'admin' && (
-                            <motion.button onClick={openModal} className="group relative bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-6 py-3 rounded-xl flex items-center justify-center gap-2 font-semibold shadow-lg hover:shadow-purple-500/25 transition-all duration-300 whitespace-nowrap" whileHover={{ scale: 1.05, y: -2 }} whileTap={{ scale: 0.95 }}>
+                            <motion.button onClick={() => openFormModal()} className="group relative bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-6 py-3 rounded-xl flex items-center justify-center gap-2 font-semibold shadow-lg hover:shadow-purple-500/25 transition-all duration-300 whitespace-nowrap" whileHover={{ scale: 1.05, y: -2 }} whileTap={{ scale: 0.95 }}>
                                 <Plus size={20} className="group-hover:rotate-90 transition-transform duration-300" />Add Resource
                             </motion.button>
                         )}
@@ -208,34 +269,37 @@ const ResourcePage = () => {
 
                 <AnimatePresence mode="wait">
                     <motion.div key={activeTab} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} transition={{ duration: 0.4 }}>
-                        {activeTab === 'Yt-Link' ? <ResourceGrid list={filterResources(ytLinks)} type="YouTube Link" openModal={openModal} isAdmin={user?.role === 'admin'} /> : <ResourceGrid list={filterResources(documents)} type="Document" openModal={openModal} isAdmin={user?.role === 'admin'} />}
+                        {activeTab === 'Yt-Link' ? 
+                            <ResourceGrid list={filterResources(ytLinks)} type="YouTube Link" openModal={openFormModal} isAdmin={user?.role === 'admin'} onEdit={openFormModal} onDelete={openDeleteModal} /> : 
+                            <ResourceGrid list={filterResources(documents)} type="Document" openModal={openFormModal} isAdmin={user?.role === 'admin'} onEdit={openFormModal} onDelete={openDeleteModal} />
+                        }
                     </motion.div>
                 </AnimatePresence>
             </motion.div>
         </main>
 
-        {/* Modal */}
+        {/* Form Modal (Add/Edit) */}
         <AnimatePresence>
-            {isModalOpen && (
-                <motion.div className="fixed inset-0  flex items-center justify-center p-4 z-50" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={closeModal}>
+            {isFormModalOpen && (
+                <motion.div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={closeFormModal}>
                     <motion.div className="bg-black/90 backdrop-blur-sm rounded-3xl shadow-2xl max-w-lg w-full border border-white/10 overflow-hidden" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} transition={{ duration: 0.3 }} onClick={(e) => e.stopPropagation()}>
                         <div className="p-8 border-b border-white/10 relative">
-                            <h2 className="text-2xl font-bold bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent">Add New {activeTab === 'Yt-Link' ? 'YouTube Link' : 'Document'}</h2>
-                            <motion.button onClick={closeModal} className="absolute top-6 right-6 text-gray-400 hover:text-white p-2 rounded-full hover:bg-white/10 transition-all" whileHover={{ scale: 1.1, rotate: 90 }} whileTap={{ scale: 0.9 }}>
+                            <h2 className="text-2xl font-bold bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent">{resourceToEdit ? 'Update Resource' : `Add New ${activeTab === 'Yt-Link' ? 'YouTube Link' : 'Document'}`}</h2>
+                            <motion.button onClick={closeFormModal} className="absolute top-6 right-6 text-gray-400 hover:text-white p-2 rounded-full hover:bg-white/10 transition-all" whileHover={{ scale: 1.1, rotate: 90 }} whileTap={{ scale: 0.9 }}>
                                 <X size={24} />
                             </motion.button>
                         </div>
                         <form onSubmit={handleSubmit} className="p-8 space-y-6">
                             <InputField icon={BookOpen} label="Resource Title" name="title" value={newResource.title} onChange={handleChange} error={validationErrors.title} placeholder="e.g., Intro to React Hooks" required />
-                            {activeTab === 'Yt-Link' ? (
+                            {(resourceToEdit?.type || activeTab) === 'Yt-Link' ? (
                                 <InputField icon={Youtube} label="YouTube Link" name="link" value={newResource.link} onChange={handleChange} error={validationErrors.link} placeholder="https://youtube.com/watch?v=..." required />
                             ) : (
-                                <FileInput file={newResource.file} onChange={handleFileChange} error={validationErrors.file} />
+                                <FileInput file={newResource.file} onChange={handleFileChange} error={validationErrors.file} existingFileName={resourceToEdit ? resourceToEdit.title : null} />
                             )}
                             <div className="flex gap-4 pt-4">
-                                <motion.button type="button" onClick={closeModal} className="flex-1 py-3 text-gray-300 bg-white/10 hover:bg-white/20 rounded-xl font-semibold transition-all" whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>Cancel</motion.button>
+                                <motion.button type="button" onClick={closeFormModal} className="flex-1 py-3 text-gray-300 bg-white/10 hover:bg-white/20 rounded-xl font-semibold transition-all" whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>Cancel</motion.button>
                                 <motion.button type="submit" className="flex-1 bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-3 rounded-xl font-semibold shadow-lg hover:shadow-purple-500/25 transition-all flex items-center justify-center gap-2 group" whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                                    <CheckCircle2 className="w-5 h-5 group-hover:scale-110 transition-transform" />Add Resource
+                                    <CheckCircle2 className="w-5 h-5 group-hover:scale-110 transition-transform" />{resourceToEdit ? 'Update Resource' : 'Add Resource'}
                                 </motion.button>
                             </div>
                         </form>
@@ -243,12 +307,23 @@ const ResourcePage = () => {
                 </motion.div>
             )}
         </AnimatePresence>
+
+        {/* Delete Confirmation Modal */}
+        <AnimatePresence>
+            {resourceToDelete && (
+                <DeleteConfirmationModal
+                    resource={resourceToDelete}
+                    onClose={closeDeleteModal}
+                    onConfirm={handleDeleteResource}
+                />
+            )}
+        </AnimatePresence>
         <Footer />
     </div>
   );
 };
 
-const ResourceGrid = ({ list, type, openModal, isAdmin }) => {
+const ResourceGrid = ({ list, type, openModal, isAdmin, onEdit, onDelete }) => {
     if (list.length === 0) {
         return (
             <motion.div className="text-center py-20" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
@@ -259,7 +334,7 @@ const ResourceGrid = ({ list, type, openModal, isAdmin }) => {
                     <h3 className="text-2xl font-semibold text-gray-300 mb-3">No {type}s Found</h3>
                     <p className="text-gray-400 mb-6">{!isAdmin ? "Check back later for new materials." : "Be the first to contribute to this subject!"}</p>
                     {isAdmin && (
-                        <motion.button onClick={openModal} className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                        <motion.button onClick={() => openModal()} className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                             Add First Resource
                         </motion.button>
                     )}
@@ -270,18 +345,27 @@ const ResourceGrid = ({ list, type, openModal, isAdmin }) => {
 
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {list.map((resource, index) => <ResourceCard key={resource._id} resource={resource} index={index} />)}
+            {list.map((resource, index) => 
+                <ResourceCard 
+                    key={resource._id} 
+                    resource={resource} 
+                    index={index} 
+                    isAdmin={isAdmin} 
+                    onEdit={onEdit} 
+                    onDelete={onDelete} 
+                />
+            )}
         </div>
     );
 };
 
-const ResourceCard = ({ resource, index }) => {
+const ResourceCard = ({ resource, index, isAdmin, onEdit, onDelete }) => {
     const getIcon = (type) => type === 'Yt-Link' ? <Youtube size={24}/> : <FileText size={24}/>;
     const getColor = (type) => type === 'Yt-Link' ? 'from-red-500 to-pink-500' : 'from-blue-500 to-purple-500';
-
+    const user = useRecoilValue(userAtom);
+    // The main card is wrapped in a div instead of an anchor to prevent nesting interactive elements
     return (
-        <motion.a
-            href={resource.link} target="_blank" rel="noopener noreferrer"
+        <motion.div
             className="group relative bg-black/20 backdrop-blur-sm rounded-2xl border border-white/10 hover:border-purple-500/50 transition-all duration-300 overflow-hidden"
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.05 }} whileHover={{ y: -8 }}
         >
@@ -289,19 +373,57 @@ const ResourceCard = ({ resource, index }) => {
             <div className="p-6">
                 <div className="flex items-start justify-between mb-4">
                     <div className={`p-3 rounded-xl bg-gradient-to-r ${getColor(resource.type)}/20 text-white`}>{getIcon(resource.type)}</div>
-                    <ExternalLink className="w-4 h-4 text-gray-500 group-hover:text-white transition-colors" />
+                    <a href={resource.link} target="_blank" rel="noopener noreferrer" className="p-1 text-gray-500 group-hover:text-white transition-colors">
+                      <ExternalLink className="w-4 h-4" />
+                    </a>
                 </div>
-                <h3 className="text-lg font-bold text-white group-hover:text-purple-300 transition-colors line-clamp-2 mb-2 h-14">{resource.title}</h3>
-                <p className="text-sm text-gray-400 truncate mb-4">{resource.link}</p>
+                <a href={resource.link} target="_blank" rel="noopener noreferrer">
+                  <h3 className="text-lg font-bold text-white group-hover:text-purple-300 transition-colors line-clamp-2 mb-2 h-14">{resource.title}</h3>
+                  <p className="text-sm text-gray-400 truncate mb-4">{resource.link}</p>
+                </a>
                 <div className="flex items-center justify-between text-xs text-gray-500 pt-3 border-t border-white/10">
                     <div className="flex items-center gap-1.5"><Calendar className="w-3.5 h-3.5" /><span>{new Date(resource.createdAt).toLocaleDateString()}</span></div>
-                    <div className="flex items-center gap-1.5"><User className="w-3.5 h-3.5" /><span>{resource.author?.firstName || 'Admin'}</span></div>
+                    <div className="flex items-center gap-1.5"><User className="w-3.5 h-3.5" /><span>{user.email || 'Admin'}</span></div>
                 </div>
             </div>
+
+            {isAdmin && (
+                <div className="absolute bottom-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <button onClick={(e) => { e.stopPropagation(); onEdit(resource); }} className="p-2 bg-blue-500/20 hover:bg-blue-500/40 text-blue-300 rounded-full transition-all" aria-label="Edit resource">
+                        <Pencil size={16} />
+                    </button>
+                    <button onClick={(e) => { e.stopPropagation(); onDelete(resource); }} className="p-2 bg-red-500/20 hover:bg-red-500/40 text-red-300 rounded-full transition-all" aria-label="Delete resource">
+                        <Trash2 size={16} />
+                    </button>
+                </div>
+            )}
             <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
-        </motion.a>
+        </motion.div>
     );
 };
+
+const DeleteConfirmationModal = ({ resource, onClose, onConfirm }) => {
+    return (
+        <motion.div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose}>
+            <motion.div className="bg-black/90 backdrop-blur-sm rounded-3xl shadow-2xl max-w-md w-full border border-white/10 p-8" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} transition={{ duration: 0.3 }} onClick={(e) => e.stopPropagation()}>
+                <div className="text-center">
+                    <AlertCircle className="mx-auto h-16 w-16 text-red-400 mb-4" />
+                    <h3 className="text-xl font-bold text-white mb-2">Delete Resource</h3>
+                    <p className="text-gray-400 mb-6">Are you sure you want to delete "<span className="font-semibold text-gray-300">{resource.title}</span>"? This action cannot be undone.</p>
+                </div>
+                <div className="flex gap-4">
+                    <motion.button onClick={onClose} className="flex-1 py-3 text-gray-300 bg-white/10 hover:bg-white/20 rounded-xl font-semibold transition-all" whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                        Cancel
+                    </motion.button>
+                    <motion.button onClick={onConfirm} className="flex-1 bg-red-600 hover:bg-red-700 text-white py-3 rounded-xl font-semibold shadow-lg hover:shadow-red-500/25 transition-all flex items-center justify-center gap-2 group" whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                        <Trash2 className="w-5 h-5" />
+                        Confirm Delete
+                    </motion.button>
+                </div>
+            </motion.div>
+        </motion.div>
+    );
+}
 
 const InputField = ({ icon: Icon, label, name, error, ...props }) => (
     <div>
@@ -316,13 +438,13 @@ const InputField = ({ icon: Icon, label, name, error, ...props }) => (
     </div>
 );
 
-const FileInput = ({ file, onChange, error }) => (
+const FileInput = ({ file, onChange, error, existingFileName }) => (
     <div>
-        <label className="block text-sm font-medium text-gray-300 mb-2">Document File *</label>
+        <label className="block text-sm font-medium text-gray-300 mb-2">Document File</label>
         <label htmlFor="file" className={`w-full flex flex-col items-center justify-center p-6 bg-black/30 border-2 rounded-xl cursor-pointer transition-all ${error ? 'border-red-500/50' : 'border-dashed border-white/20 hover:border-purple-500/50'}`}>
             <UploadCloud className="w-10 h-10 mb-2 text-gray-400" />
-            <span className="font-semibold text-white">{file ? file.name : 'Click to upload a file'}</span>
-            <span className="text-xs text-gray-500">{file ? `(${(file.size / 1024 / 1024).toFixed(2)} MB)` : 'PDF, DOCX, etc. (Max 10MB)'}</span>
+            <span className="font-semibold text-white">{file ? file.name : (existingFileName ? `Update file for: ${existingFileName}` : 'Click to upload a file')}</span>
+            <span className="text-xs text-gray-500">{file ? `(${(file.size / 1024 / 1024).toFixed(2)} MB)` : (existingFileName ? "Leave empty to keep existing file" : 'PDF, DOCX, etc. (Max 10MB)')}</span>
         </label>
         <input type="file" id="file" name="file" onChange={onChange} className="hidden" />
         <AnimatePresence>
