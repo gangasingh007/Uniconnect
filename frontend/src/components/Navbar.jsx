@@ -23,7 +23,7 @@ const Navbar = () => {
         { href: "/", icon: Home, label: "Dashboard", color: "purple", gradient: "from-purple-500 to-purple-600" },
         { href: "/subjects", icon: BookOpen, label: "Subjects", color: "blue", gradient: "from-blue-500 to-cyan-500" },
         { href: "Syllabus.html", icon: BookOpenCheck, label: "Syllabus", color: "green", gradient: "from-green-500 to-emerald-500", external: true },
-        { href: "Datesheet.html", icon: CalendarClock, label: "Datesheet", color: "orange", gradient: "from-orange-500 to-pink-500", external: true }
+        { href: "Datesheet.html", icon: CalendarClock, label: "Datesheet", color: "red", gradient: "from-orange-500 to-pink-500", external: true }
     ];
 
     return (
