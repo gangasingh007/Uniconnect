@@ -25,7 +25,7 @@ dist-ssr
 .env
 Blueprint.docx
 node_modules
-./Syllabus.html
-./DateSheet.html
-./Calender.html
-./Backend/Data
+Syllabus.html
+DateSheet.html
+Calender.html
+Data
