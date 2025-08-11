@@ -26,11 +26,10 @@ const resourceSchema = new mongoose.Schema({
         ref : "Class",
         required : true
     },
-    createdBy : { 
-        type : mongoose.Schema.Types.ObjectId,
-        ref : "User",
+    createdBy : {
+        type : String,
         required : true
-    },
+    }
 },{timestamps:true})
 
 const Resource = mongoose.model("Resource",resourceSchema);

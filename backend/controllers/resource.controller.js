@@ -5,65 +5,83 @@ import mongoose from "mongoose";
 import { createResourceSchema } from "../types/resource.validatior.js";
 import User from "../models/user.model.js";
 
-export const createYtresource = async (req, res)=>{
+export const createYtresource = async (req, res) => {
     try {
+        console.log('=== DEBUG: createYtresource called ===', {
+            params: req.params,
+            body: req.body,
+            userId: req.userId
+        });
+
         const { classId, subjectId } = req.params;
-        const { title, link } = req.body;
-        const createdBy = req.userId; // from authMiddleware
+        const createdBy = req.userId;
 
-        // Validate input
-        if (!title || !link) {
-            return res.status(400).json({ msg: "Title and link are required." });
-        }
-
-        // validate using zod
+        // Validate body using Zod
         const parsedPayload = createResourceSchema.safeParse(req.body);
         if (!parsedPayload.success) {
-            return res.status(400).json({ msg: "Invalid data" });
+            return res.status(400).json({ 
+                msg: "Invalid data",
+                errors: parsedPayload.error.errors
+            });
         }
 
+        const { title, link } = parsedPayload.data;
+
+        // Validate ObjectIds
         if (!mongoose.Types.ObjectId.isValid(classId) || !mongoose.Types.ObjectId.isValid(subjectId)) {
             return res.status(400).json({ msg: "Invalid Class or Subject ID format." });
         }
 
-        // Check if class and subject exist and are related
+        // Check Class
         const classDoc = await Class.findById(classId);
         if (!classDoc) {
             return res.status(404).json({ msg: "Class not found." });
         }
 
+        // Check Subject
         const subject = await Subject.findById(subjectId);
         if (!subject) {
             return res.status(404).json({ msg: "Subject not found." });
         }
 
-        if (!classDoc.subject.includes(subject._id)) {
+        // Verify subject belongs to class
+        if (!classDoc.subject.some(id => id.toString() === subject._id.toString())) {
             return res.status(400).json({ msg: "Subject does not belong to this class." });
         }
 
-        // Create the new resource and add it to the subject
+        // Check User
+        const user = await User.findById(createdBy);
+        if (!user) {
+            return res.status(404).json({ msg: "User not found." });
+        }
+
+        // Create Resource & Update Subject
         const newResource = await Resource.create({
-            title, 
+            title,
             link,
             type: "Yt-Link",
             subject: subjectId,
             class: classId,
-            createdBy
-             });
-        subject.resources.push(newResource._id);
-        await subject.save();
-            
-        const user = User.findById(createdBy);
+            createdBy: user.firstName
+        });
 
-        // Send success response
-        res.status(201).json({ msg: "YouTube resource created and added to subject successfully.", resource: newResource,cretedBy : user });
+        await Subject.findByIdAndUpdate(subjectId, {
+            $push: { resources: newResource._id }
+        });
+
+        res.status(201).json({ 
+            msg: "YouTube resource created and added to subject successfully.", 
+            resource: newResource, 
+            createdBy 
+        });
     } catch (error) {
-        console.error("Error creating YouTube resource:", error);
+        console.error("Error creating YouTube resource:", error.stack);
         res.status(500).json({ msg: "Server error.", error: error.message });
     }
-}
+};
 
-export const getResources = async (req,res)=>{
+
+export const getResources = async (req, res) => {
     try {
         const { classId, subjectId } = req.params;
 
@@ -72,27 +90,38 @@ export const getResources = async (req,res)=>{
             return res.status(400).json({ msg: "Invalid Class or Subject ID format." });
         }
 
-        // Check if class and subject exist and are related
-        const classDoc = await Class.findById(classId);
+        // Fetch Class
+        const classDoc = await Class.findById(classId).lean();
         if (!classDoc) {
             return res.status(404).json({ msg: "Class not found." });
         }
 
-        const subject = await Subject.findById(subjectId).populate('resources');
+        // Fetch Subject with resources
+        const subject = await Subject.findById(subjectId)
+            .populate('resources', 'title link type createdBy')
+            .lean();
         if (!subject) {
             return res.status(404).json({ msg: "Subject not found." });
         }
 
-        if (!classDoc.subject.includes(subject._id)) {
+        // Verify relationship
+        if (!classDoc.subject.some(id => id.equals(subject._id))) {
             return res.status(400).json({ msg: "Subject does not belong to this class." });
         }
+        
 
-        res.status(200).json({ msg: "Resources fetched successfully.", resources: subject.resources });
+        res.status(200).json({ 
+            msg: "Resources fetched successfully.", 
+            resources: subject.resources 
+        });
+
     } catch (error) {
-        console.error("Error fetching resources:", error);
+        console.error("Error fetching resources:", error.stack);
         res.status(500).json({ msg: "Server error.", error: error.message });
     }
-}
+};
+
+
 
 export const deleteResource = async (req,res) => {
     const classId = req.params.classId;
