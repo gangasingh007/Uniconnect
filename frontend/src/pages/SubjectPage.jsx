@@ -30,7 +30,6 @@ const SubjectPage = () => {
 
   const handleClick = (subjectId) => {
     setsubjectId(subjectId);
-    console.log(subjectId)
     navigate('/subjects/resource');
   };
 

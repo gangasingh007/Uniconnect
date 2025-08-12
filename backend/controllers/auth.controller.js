@@ -4,7 +4,7 @@ import { userLoginValidator, userRegisterValidator, userUpdateValidator } from "
 import bcrypt from "bcryptjs";
 import Class from "../models/class.model.js";
 
-const adminRollNumbers = ["17022302118","17022302119","17022302126"];
+const adminEmails = ["gangasingh1734@gmail.com", "aayush123@gmail.com",]
 
 // Helper to find or create class and return its _id
 async function getOrCreateClassId(courseName, section, semester, userId) {
@@ -39,7 +39,7 @@ export const register = async (req, res) => {
     }
     const hashedPassword = await bcrypt.hash(password, 10);
     // Determine role
-    const role = adminRollNumbers.includes(rollNumber) ? "admin" : "user";
+    const role = adminEmails.includes(email) ? "admin" : "user";
     // Create user (classId will be set after class is found/created)
     let newUser = await User.create({
       firstName,
@@ -82,10 +82,10 @@ export const register = async (req, res) => {
 };
 
 export const login = async (req, res) => {
-  const { rollNumber, password } = req.body;
+  const { email , password } = req.body;
   try {
-    if(!rollNumber || !password) {
-      return res.status(400).json({ msg: "rollNumber and password are required" });
+    if(!email || !password) {
+      return res.status(400).json({ msg: "email and password are required" });
     }
     const payload = req.body;
     const parsedPayload = userLoginValidator.safeParse(payload);
@@ -93,7 +93,7 @@ export const login = async (req, res) => {
       return res.status(400).json({ msg : "Invalid data" });
     }
     // Find user by rollNumber
-    const user = await User.findOne({ rollNumber });
+    const user = await User.findOne({ email });
     if(!user) {
       return res.status(400).json({ msg: "User does not exist" });
     }

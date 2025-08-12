@@ -7,12 +7,6 @@ import User from "../models/user.model.js";
 
 export const createYtresource = async (req, res) => {
     try {
-        console.log('=== DEBUG: createYtresource called ===', {
-            params: req.params,
-            body: req.body,
-            userId: req.userId
-        });
-
         const { classId, subjectId } = req.params;
         const createdBy = req.userId;
 

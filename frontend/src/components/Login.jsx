@@ -8,10 +8,10 @@ import toast from 'react-hot-toast';
 import { loadingAtom } from '../atoms/states.atom';
 import Loader from './Loader';
 import InteractiveBackground from './InteractiveBackground';
-import { Eye, EyeOff, Lock, Hash } from 'lucide-react';
+import { Eye, EyeOff, Lock, Hash, Mail } from 'lucide-react';
 
 const Login = () => {
-  const [rollNumber, setRollNumber] = useState("");
+  const [email, setemail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useRecoilState(loadingAtom);
   const [showPassword, setShowPassword] = useState(false);
@@ -24,7 +24,7 @@ const Login = () => {
 
     try {
       const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/v1/auth/student/login`, {
-        rollNumber,
+        email,
         password,
       });
 
@@ -83,11 +83,11 @@ const Login = () => {
               <form onSubmit={handleSubmit} className="p-8 space-y-6">
                 {/* Roll Number */}
                 <div className="relative">
-                  <Hash className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500 pointer-events-none" />
+                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500 pointer-events-none" />
                   <input
-                    type="text"
-                    value={rollNumber}
-                    onChange={(e) => setRollNumber(e.target.value)}
+                    type="email"
+                    value={email}
+                    onChange={(e) => setemail(e.target.value)}
                     className="w-full pl-12 pr-4 py-3 bg-black/30 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500 transition-all duration-300"
                     placeholder="Enter Roll Number"
                     required

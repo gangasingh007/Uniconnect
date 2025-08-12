@@ -14,21 +14,8 @@ const HeroSection = () => {
     const navigate = useNavigate();
 
     // Mouse-tracking for aurora effect
-    const mouseX = useMotionValue(0);
-    const mouseY = useMotionValue(0);
-
-    const auroraX = useTransform(mouseX, [0, window.innerWidth], [-100, 100]);
-    const auroraY = useTransform(mouseY, [0, window.innerHeight], [-100, 100]);
-
-    useEffect(() => {
-        const handleMouseMove = (e) => {
-            mouseX.set(e.clientX);
-            mouseY.set(e.clientY);
-        };
-        window.addEventListener('mousemove', handleMouseMove);
-        return () => window.removeEventListener('mousemove', handleMouseMove);
-    }, [mouseX, mouseY]);
-
+   
+    
     useEffect(() => {
         const timer = setInterval(() => setCurrentTime(new Date()), 1000);
         return () => clearInterval(timer);
@@ -54,14 +41,7 @@ const HeroSection = () => {
             {/* ===== ENHANCED BACKGROUND ===== */}
             <div className="absolute inset-0 -z-10 pointer-events-none">
                 <InteractiveBackground />
-                <motion.div
-                    className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(124,58,237,0.15),transparent_50%)]"
-                    style={{
-                        translateX: auroraX,
-                        translateY: auroraY,
-                    }}
-                    transition={{ type: 'spring', stiffness: 100, damping: 20 }}
-                />
+            
                 <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_60%,#0a0a0f)]"></div>
             </div>
             

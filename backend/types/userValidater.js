@@ -12,7 +12,7 @@ export const userRegisterValidator = z.object({
 });
 
 export const userLoginValidator = z.object({
-    rollNumber: z.string("Invalid email format"),
+    email: z.email("Invalid email format"),
     password: z.string().min(6, "Password must be at least 6 characters long"),
 });
 export const userUpdateValidator = z.object({
