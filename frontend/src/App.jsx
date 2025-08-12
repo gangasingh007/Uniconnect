@@ -17,7 +17,6 @@ import { classAtom } from './atoms/classAtom'
 import ResourcePage from './pages/ResourcePage'
 
 
-
 const App = () => {
   const [loading, setLoading] = useRecoilState(loadingAtom);
   const [error, setError] = useRecoilState(errorAtom);
