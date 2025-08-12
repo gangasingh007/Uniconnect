@@ -269,8 +269,6 @@ const ResourcePage = () => {
     );
 };
 
-// --- CHILD COMPONENTS (Unchanged, but provided for completeness) ---
-
 const ResourceList = ({ list, type, openModal, isAdmin, onEdit, onDelete }) => {
     if (list.length === 0) {
         return ( <motion.div className="text-center py-20" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}> <div className="bg-black/20 backdrop-blur-sm rounded-3xl p-12 max-w-lg mx-auto border border-white/10"> <motion.div animate={{ scale: [1, 1.05, 1] }} transition={{ duration: 2, repeat: Infinity }} className="mx-auto w-fit"> <BookOpen size={64} className="text-gray-500 mb-6" /> </motion.div> <h3 className="text-2xl font-semibold text-gray-300 mb-3">No {type}s Found</h3> <p className="text-gray-400 mb-6">{!isAdmin ? "Check back later for new materials." : "Be the first to contribute to this subject!"}</p> {isAdmin && ( <motion.button onClick={() => openModal()} className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}> Add First Resource </motion.button> )} </div> </motion.div> );
