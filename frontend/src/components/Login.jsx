@@ -23,7 +23,7 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const res = await axios.post("http://localhost:3000/api/v1/auth/student/login", {
+      const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/v1/auth/student/login`, {
         rollNumber,
         password,
       });

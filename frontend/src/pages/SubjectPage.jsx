@@ -51,7 +51,7 @@ const SubjectPage = () => {
     try {
       const token = localStorage.getItem('token');
       const res = await axios.get(
-        `http://localhost:3000/api/v1/subject/all-subjects/${user.classId}`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/v1/subject/all-subjects/${user.classId}`,
         { headers: { authorization: `Bearer ${token}` } }
       );
       setSubjects(res.data.subjects || []);
@@ -108,14 +108,14 @@ const SubjectPage = () => {
     try {
       if (modalMode === 'add') {
         await axios.post(
-          `http://localhost:3000/api/v1/subject/create-subject/${user.classId}`,
+          `${import.meta.env.VITE_BACKEND_URL}/api/v1/subject/create-subject/${user.classId}`,
           form,
           { headers: { authorization: `Bearer ${token}` } }
         );
         toast.success('Subject added successfully!');
       } else if (modalMode === 'edit' && selectedSubject) {
         await axios.put(
-          `http://localhost:3000/api/v1/subject/update-subject/${user.classId}/${selectedSubject._id}`,
+          `${import.meta.env.VITE_BACKEND_URL}/api/v1/subject/update-subject/${user.classId}/${selectedSubject._id}`,
           form,
           { headers: { authorization: `Bearer ${token}` } }
         );
@@ -139,7 +139,7 @@ const SubjectPage = () => {
     const token = localStorage.getItem('token');
     try {
       await axios.delete(
-        `http://localhost:3000/api/v1/subject/delete-subject/${user.classId}/${selectedSubject._id}`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/v1/subject/delete-subject/${user.classId}/${selectedSubject._id}`,
         { headers: { authorization: `Bearer ${token}` } }
       );
       toast.success('Subject deleted successfully!');
@@ -280,7 +280,7 @@ const SubjectPage = () => {
                       className="relative"
                       whileHover={{ scale: 1.1, rotate: 5 }}
                     >
-                      <div className={`bg-gradient-to-br ${subjectColors[index % subjectColors.length]} p-4 rounded-2xl shadow-lg group-hover:shadow-purple-500/30 transition-all duration-300`}>
+                      <div className={`bg-gradient-to-br from-purple-500 to-indigo-600 p-4 rounded-2xl shadow-lg group-hover:shadow-purple-500/30 transition-all duration-300`}>
                         <BookOpen className="text-white" size={28} />
                       </div>
                       <motion.div
@@ -329,7 +329,7 @@ const SubjectPage = () => {
                       {subject.title}
                     </h3>
                     <div className="flex items-center gap-3">
-                      <div className={`w-2 h-2 bg-gradient-to-r ${subjectColors[index % subjectColors.length]} rounded-full shadow-lg`}></div>
+                      <div className="text-gray-300 font-medium">Subject teacher: </div>
                       <p className="text-gray-300 font-medium truncate flex-1">
                         {subject.subjectTeacher}
                       </p>

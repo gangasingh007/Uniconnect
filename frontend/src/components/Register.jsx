@@ -56,7 +56,7 @@ const Register = () => {
         setIsLoading(true);
         try {
             const { confirmPassword, ...payload } = formData;
-            const res = await axios.post("http://localhost:3000/api/v1/auth/student/register", payload);
+            const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/v1/auth/student/register`, payload);
             const { user, token } = res.data;
             setAuth({ user, token });
             localStorage.setItem("token", token);
