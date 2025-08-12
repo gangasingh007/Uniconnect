@@ -119,7 +119,7 @@ const ProfileSidebar = ({ user, onEditClick }) => (
             </div>
         </motion.div>
         
-        <h2 className="text-3xl font-bold text-white truncate max-w-full">{`${user?.firstName || ''} ${user?.lastName || ''}`}</h2>
+        <h2 className="text-3xl pb-2 font-bold text-white truncate max-w-full">{`${user?.firstName || ''} ${user?.lastName || ''}`}</h2>
         <p className="text-gray-400 truncate max-w-full mt-1 mb-6">{user?.email || ''}</p>
         <div className="flex items-center gap-2 bg-green-500/10 border border-green-500/30 text-green-400 text-sm px-3 py-1 rounded-full mb-6">
                 <ShieldCheck size={16} />

@@ -3,7 +3,7 @@ import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-mo
 import { useRecoilValue } from 'recoil';
 import Typewriter from 'typewriter-effect';
 import { userAtom } from '../atoms/userAtom';
-import { CalendarCheck2, LibraryBig, BookOpen, Users, GraduationCap, Clock, Sparkles, ArrowRight } from 'lucide-react';
+import { CalendarCheck2, LibraryBig, BookOpen, Users, GraduationCap, Clock, Sparkles, ArrowRight, Hash } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import InteractiveBackground from './InteractiveBackground';
 
@@ -100,7 +100,7 @@ const HeroSection = () => {
                                 variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { delay: 1 } } }}
                             >
                                 <InfoBadge icon={GraduationCap} text={userClass} />
-                                <InfoBadge icon={Users} text={`Roll No: ${user.rollNumber}`} />
+                                <InfoBadge icon={Hash} text={`Roll No: ${user.rollNumber}`} />
                             </motion.div>
                         </main>
 
