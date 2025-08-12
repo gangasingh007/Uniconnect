@@ -4,6 +4,7 @@ import Class from "../models/class.model.js";
 import mongoose from "mongoose";
 import { createResourceSchema } from "../types/resource.validatior.js";
 import User from "../models/user.model.js";
+import { uploadFromBuffer } from '../utils/cloudinary.js';
 
 export const createYtresource = async (req, res) => {
     try {
@@ -228,3 +229,55 @@ export const updateResource = async (req,res) => {
         })
     }
 }
+
+export const uploadResourceDocument = async (req, res) => {
+    const { classId, subjectId } = req.params;
+    const { title } = req.body;
+    const { file } = req;
+  
+    if (!file) {
+        return res.status(400).json({ message: 'No file uploaded.' });
+    }
+    if (!title) {
+        return res.status(400).json({ message: 'Title is required.' });
+    }
+  
+    try {
+        const uploadResult = await uploadFromBuffer(file.buffer, 'Uniconnect/documents');
+        if (!uploadResult || !uploadResult.secure_url) {
+            throw new Error('Cloudinary upload failed to return a secure URL.');
+          }
+  
+      // 3. Create a new Resource document
+      const newResource = new Resource({
+        title,  
+        link: uploadResult.secure_url, // Use the publicly accessible URL
+        type: 'document',
+        subject: subjectId,
+        class: classId,
+        createdBy: req.user._id, // Assuming you have user info from an auth middleware
+      });
+  
+      await newResource.save();
+  
+      // 4. Update the Subject to include the new resource
+      await Subject.findByIdAndUpdate(
+        subjectId,
+        { $push: { resources: newResource._id } },
+        { new: true }
+      );
+  
+      // 5. Send a success response
+      res.status(201).json({
+        message: 'Document uploaded and resource created successfully!',
+        resource: newResource,
+      });
+  
+    } catch (error) {
+      console.error('Error during resource upload:', error);
+      res.status(500).json({ 
+        message: 'Server error during file upload.',
+        error: error.message 
+      });
+    }
+  };
