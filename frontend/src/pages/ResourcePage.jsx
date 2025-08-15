@@ -212,7 +212,7 @@ const ResourcePage = () => {
             <div className="min-h-screen w-full relative bg-gradient-to-br from-[#0a0a0f] via-[#141423] to-[#1a1a2e]">
                 <div className="absolute inset-0 -z-10"><InteractiveBackground /></div>
                 <Navbar />
-                <main className="relative z-10 flex items-center justify-center min-h-[calc(100vh-200px)]">
+                <main className="relative z-10 flex items-center justify-center">
                     <div className="text-center p-8">
                         <AlertCircle className="mx-auto h-16 w-16 text-red-400 mb-4" />
                         <h2 className="text-3xl font-bold bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent mb-3">Subject Not Selected</h2>
@@ -228,8 +228,8 @@ const ResourcePage = () => {
     }
 
     return (
-        <div className="min-h-screen w-full relative bg-gradient-to-br from-[#0a0a0f] via-[#141423] to-[#1a1a2e]">
-            <div className="absolute inset-0 -z-10"><InteractiveBackground /></div>
+        <div className="min-h-screen w-full relative">
+            <div className="absolute inset-0 -z-10"></div>
             <Navbar />
             <main className="relative z-10 px-4 sm:px-6 lg:px-8 py-8">
                 <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} className="max-w-7xl mx-auto">

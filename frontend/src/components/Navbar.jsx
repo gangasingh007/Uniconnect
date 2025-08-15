@@ -3,8 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { LogOut, User, ChevronDown, BookOpenCheck, CalendarClock, Menu, X, BookOpen, Home, Sparkles } from 'lucide-react';
-
+import { LogOut, User, ChevronDown, BookOpenCheck, CalendarClock, ChevronLeftIcon,Menu, X, BookOpen, Home, Sparkles } from 'lucide-react';
 import { userAtom } from '../atoms/userAtom';
 import { loadingAtom } from '../atoms/states.atom';
 
@@ -13,13 +12,14 @@ const colorMap = {
     purple: { text: 'text-purple-400', gradient: 'from-purple-500 to-purple-600' },
     blue: { text: 'text-blue-400', gradient: 'from-blue-500 to-cyan-500' },
     green: { text: 'text-green-400', gradient: 'from-green-500 to-emerald-500' },
-    red: { text: 'text-red-400', gradient: 'from-orange-500 to-pink-500' },
+    orange: { text: 'text-orange-400', gradient: 'from-orange-500 to-pink-500' },
 };
 
 // Main Navbar Component
 const Navbar = () => {
     const user = useRecoilValue(userAtom);
     const [scrolled, setScrolled] = useState(false);
+    const navigate = useNavigate()
 
     useEffect(() => {
         const handleScroll = () => setScrolled(window.scrollY > 10);
@@ -31,7 +31,8 @@ const Navbar = () => {
         { href: "/", icon: Home, label: "Dashboard", color: "purple" },
         { href: "/subjects", icon: BookOpen, label: "Subjects", color: "blue" },
         { href: "Syllabus.html", icon: BookOpenCheck, label: "Syllabus", color: "green", external: true },
-        { href: "Datesheet.html", icon: CalendarClock, label: "Datesheet", color: "red", external: true }
+        { href: "Datesheet.html", icon: CalendarClock, label: "Datesheet", color: "orange", external: true },
+
     ];
 
     return (
@@ -188,6 +189,18 @@ const ProfileDropdown = ({ user }) => {
 
 const MobileNav = ({ navLinks }) => {
     const [isOpen, setIsOpen] = useState(false);
+    const navigate = useNavigate();
+    const [, setLoading] = useRecoilState(loadingAtom);
+
+    const handleLogout = () => {
+        setLoading(true);
+        setTimeout(() => {
+            localStorage.removeItem("token");
+            navigate("/login");
+            toast.success("Logged out successfully.");
+            setLoading(false);
+        }, 500);
+    };
 
     useEffect(() => {
         document.body.style.overflow = isOpen ? 'hidden' : '';
@@ -198,12 +211,12 @@ const MobileNav = ({ navLinks }) => {
         open: { x: 0, transition: { type: "spring", stiffness: 260, damping: 30 } },
         closed: { x: "100%", transition: { type: "spring", stiffness: 260, damping: 30 } }
     };
-    
+
     const listVariants = {
         open: { transition: { staggerChildren: 0.08, delayChildren: 0.2 } },
         closed: { transition: { staggerChildren: 0.05, staggerDirection: -1 } }
     };
-    
+
     const itemVariants = {
         open: { y: 0, opacity: 1, transition: { y: { stiffness: 1000, velocity: -100 } } },
         closed: { y: 50, opacity: 0, transition: { y: { stiffness: 1000 } } }
@@ -211,40 +224,54 @@ const MobileNav = ({ navLinks }) => {
 
     return (
         <div className="lg:hidden">
-            <motion.button 
-                onClick={() => setIsOpen(true)} 
-                className="p-2.5 rounded-full bg-black/30 hover:bg-black/50 border border-white/20 hover:border-purple-500/50 transition-all duration-300 group"
+            {/* Open Menu Button */}
+            <motion.button
+                onClick={() => setIsOpen(true)}
+                className="p-3 rounded-full bg-black/40 border border-white/20 
+                           shadow-lg shadow-purple-900/30 backdrop-blur-md
+                           transition-all duration-300 group"
                 whileTap={{ scale: 0.95 }}
             >
-                <Menu className="text-white group-hover:text-purple-300 transition-colors duration-300" size={20} />
+                <Menu className="text-white group-hover:text-purple-200 transition-colors duration-300" size={20} />
             </motion.button>
 
+            {/* Menu Drawer */}
             <AnimatePresence>
                 {isOpen && (
                     <>
+                        {/* Backdrop */}
                         <motion.div
                             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
                             onClick={() => setIsOpen(false)}
-                            className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm "
+                            className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm"
                         />
+
+                        {/* Drawer */}
                         <motion.div
                             variants={menuVariants} initial="closed" animate="open" exit="closed"
-                            className="fixed top-0 right-0 bottom-0 z-50 w-full max-w-sm bg-black/50 backdrop-blur-2xl border-l border-white/10 shadow-2xl shadow-black/50"
+                            className="fixed top-0 right-0 bottom-0 z-50 w-full max-w-sm 
+                                       bg-gradient-to-br from-black/70 to-gray-900/80
+                                       backdrop-blur-2xl border-l border-white/10 
+                                       shadow-2xl shadow-black/60"
                         >
-                            <div className="p-6 h-full flex flex-col ">
-                                <div className="flex justify-between items-center mb-15 pb-5 border-b border-white/30">
-                                     <Logo />
-                                     <motion.button 
-                                        onClick={() => setIsOpen(false)} 
-                                        className="p-2 rounded-full bg-white/5 hover:bg-red-500/20 transition-colors duration-300 group"
+                            <div className="p-6 h-full flex flex-col">
+                                {/* Header */}
+                                <div className="flex justify-between items-center mb-6 pb-4 border-b border-white/20">
+                                    <Logo />
+                                    <motion.button
+                                        onClick={() => setIsOpen(false)}
+                                        className="p-2 rounded-full bg-white/5 hover:bg-red-500/20 
+                                                   hover:shadow-red-500/30 hover:shadow-md 
+                                                   transition-all duration-300 group"
                                         whileHover={{ scale: 1.1, rotate: 90 }}
                                         whileTap={{ scale: 0.9 }}
                                     >
                                         <X className="text-gray-300 group-hover:text-red-400 transition-colors" size={24} />
                                     </motion.button>
                                 </div>
-                                
-                                <motion.ul variants={listVariants} className="flex flex-col gap-4">
+
+                                {/* Links */}
+                                <motion.ul variants={listVariants} className="flex flex-col gap-3">
                                     {navLinks.map((link) => (
                                         <motion.li key={link.label} variants={itemVariants}>
                                             <a
@@ -252,14 +279,43 @@ const MobileNav = ({ navLinks }) => {
                                                 target={link.external ? "_blank" : "_self"}
                                                 rel={link.external ? "noopener noreferrer" : ""}
                                                 onClick={() => setIsOpen(false)}
-                                                className="relative flex items-center gap-4 p-4 text-lg font-semibold text-gray-200 hover:text-white rounded-lg bg-white/5 hover:bg-white/10 transition-colors duration-300 group"
+                                                className="relative flex items-center gap-4 p-4 text-lg font-medium 
+                                                           text-gray-200 hover:text-white rounded-lg 
+                                                           bg-white/5 hover:bg-white/10
+                                                           shadow-sm hover:shadow-lg hover:shadow-purple-500/20
+                                                           transition-all duration-300 group"
                                             >
-                                                <div className={`absolute left-0 top-0 bottom-0 w-1 rounded-l-lg bg-gradient-to-b ${colorMap[link.color].gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
-                                                <link.icon className={`${colorMap[link.color].text} group-hover:scale-110 transition-transform duration-300`} size={24} />
+                                                {/* Side color bar */}
+                                                <div className={`absolute left-0 top-0 bottom-0 w-1 rounded-l-lg 
+                                                                bg-gradient-to-b ${colorMap[link.color].gradient} 
+                                                                opacity-0 group-hover:opacity-100 
+                                                                transition-opacity duration-300`} />
+                                                {/* Icon */}
+                                                <link.icon
+                                                    className={`${colorMap[link.color].text} 
+                                                                group-hover:scale-110 
+                                                                group-hover:drop-shadow-[0_0_6px_rgba(255,255,255,0.4)] 
+                                                                transition-transform duration-300`}
+                                                    size={24}
+                                                />
+                                                {/* Label */}
                                                 <span className="relative z-10">{link.label}</span>
                                             </a>
                                         </motion.li>
                                     ))}
+
+                                    {/* Logout */}
+                                    <motion.button
+                                        onClick={handleLogout}
+                                        variants={itemVariants}
+                                        className="flex items-center gap-4 py-4 px-4 text-lg font-medium 
+                                                   text-gray-200 hover:text-white rounded-lg 
+                                                   bg-white/5 hover:bg-red-500/20
+                                                   hover:shadow-red-500/30 hover:shadow-md
+                                                   transition-all duration-300"
+                                    >
+                                        <LogOut className='text-red-400' size={24} /> Sign Out
+                                    </motion.button>
                                 </motion.ul>
                             </div>
                         </motion.div>
@@ -269,6 +325,7 @@ const MobileNav = ({ navLinks }) => {
         </div>
     );
 };
+
 
 const MenuItem = ({ icon: Icon, label, onClick, isDanger = false }) => (
     <motion.button
