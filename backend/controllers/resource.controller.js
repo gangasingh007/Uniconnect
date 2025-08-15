@@ -3,9 +3,10 @@ import Class from "../models/class.model.js";
 import mongoose from "mongoose";
 import { createResourceSchema } from "../types/resource.validatior.js";
 import User from "../models/user.model.js";
-import { uploadFromBuffer } from '../utils/cloudinary.js';
+// import { uploadFromBuffer } from '../utils/cloudinary.js';
 // pdf-parse will be imported dynamically to avoid test file access issues
 import Resource from '../models/resource.model.js';
+
 
 export const createYtresource = async (req, res) => {
     try {
@@ -232,78 +233,72 @@ export const updateResource = async (req,res) => {
 }
 
 
+// export const uploadResourceDocument = async (req, res) => {
+//   const { classId, subjectId } = req.params;
+//   const { title } = req.body;
+//   const { file } = req; // Multer adds this
 
-export const uploadResourceDocument = async (req, res) => {
-  const { classId, subjectId } = req.params;
-  const { title } = req.body;
-  const { file } = req; // 'file' is added by Multer middleware
+//   console.log('Request Body (title):', title);
+//   console.log('Request File Object (from Multer):', file);
 
-  // --- START DEBUGGING ---
-  console.log('Request Body (title):', title);
-  console.log('Request File Object (from Multer):', file);
-  // --- END DEBUGGING ---
+//   // 1. Validation
+//   if (!file) {
+//     console.error("Validation Failed: No file was received by the server.");
+//     return res.status(400).json({ message: 'No file uploaded. Make sure the file is sent correctly.' });
+//   }
+//   if (!title) {
+//     return res.status(400).json({ message: 'Title is required.' });
+//   }
 
-  // 1. Validation
-  if (!file) {
-    console.error("Validation Failed: No file was received by the server.");
-    return res.status(400).json({ message: 'No file uploaded. Make sure the file is sent correctly.' });
-  }
-  if (!title) {
-    return res.status(400).json({ message: 'Title is required.' });
-  }
+//   let textContent = '';
 
-  // Add a specific check for the buffer before using it
-  if (!file.buffer) {
-      console.error("Validation Failed: File object was received, but the buffer is empty.");
-      return res.status(400).json({ message: 'File buffer is missing.' });
-  }
+//   try {
+//     // 2. Upload file to Cloudinary
+//     const uploadResult = await uploadFromBuffer(file.buffer, 'Uniconnect/documents');
+//     if (!uploadResult || !uploadResult.secure_url) {
+//       throw new Error('Cloudinary upload failed.');
+//     }
 
-  try {
-    // 2. Upload the file buffer to Cloudinary
-    const uploadResult = await uploadFromBuffer(file.buffer, 'Uniconnect/documents');
-    if (!uploadResult || !uploadResult.secure_url) {
-      throw new Error('Cloudinary upload failed.');
-    }
+//     // 3. Parse PDF if buffer exists
+//     if (file.buffer) {
+//       try {
+//         const data = await pdf(file.buffer); // ✅ Pass buffer directly
+//         textContent = data.text || '';
+//         console.log("PDF parsing successful.");
+//       } catch (err) {
+//         console.warn("PDF parsing failed:", err.message);
+//         textContent = '';
+//       }
+//     } else {
+//       console.error("No file buffer available for PDF parsing.");
+//     }
 
-    // 3. Extract text from the PDF buffer
-    console.log('Attempting to parse PDF from buffer...');
-    let textContent = '';
-    try {
-      const pdf = (await import('pdf-parse')).default;
-      const data = await pdf(file.buffer);
-      textContent = data.text || '';
-      console.log('PDF parsing successful.');
-    } catch (pdfError) {
-      console.warn('PDF parsing failed, continuing without text extraction:', pdfError.message);
-      textContent = ''; // Continue without text content
-    }
+//     // 4. Save resource in DB
+//     const newResource = new Resource({
+//       title,
+//       link: uploadResult.secure_url,
+//       type: 'Document',
+//       subject: subjectId,
+//       class: classId,
+//       createdBy: req.user._id,
+//       content: textContent,
+//     });
 
-    // 4. Create a new Resource document
-    const newResource = new Resource({
-      title,
-      link: uploadResult.secure_url,
-      type: 'Document',
-      subject: subjectId,
-      class: classId,
-      createdBy: req.user._id,
-      content: textContent,
-    });
+//     await newResource.save();
 
-    await newResource.save();
+//     // 5. Link resource to subject
+//     await Subject.findByIdAndUpdate(subjectId, { $push: { resources: newResource._id } });
 
-    // 5. Update the Subject
-    await Subject.findByIdAndUpdate(subjectId, { $push: { resources: newResource._id } });
+//     res.status(201).json({
+//       message: 'Document uploaded and resource created successfully!',
+//       resource: newResource,
+//     });
 
-    res.status(201).json({
-      message: 'Document uploaded and resource created successfully!',
-      resource: newResource,
-    });
-
-  } catch (error) {
-    console.error('Error during resource upload:', error);
-    res.status(500).json({ 
-      message: 'Server error during file upload.',
-      error: error.message 
-    });
-  }
-};
+//   } catch (error) {
+//     console.error('Error during resource upload:', error);
+//     res.status(500).json({
+//       message: 'Server error during file upload.',
+//       error: error.message
+//     });
+//   }
+// };

@@ -235,7 +235,7 @@ const ResourcePage = () => {
                 <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} className="max-w-7xl mx-auto">
                     <motion.div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-12 gap-6" initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.2 }}>
                         <div className="space-y-3">
-                            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-pink-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent leading-tight">Resources</h1>
+                            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-blue-400 via-purple-500 to-pink-400 bg-clip-text text-transparent leading-tight">Resources</h1>
                             <p className="text-lg text-gray-400 max-w-md">Access study materials, videos, and documents for your subjects.</p>
                         </div>
                         <div className="flex flex-col sm:flex-row gap-4 w-full lg:w-auto">
@@ -244,7 +244,7 @@ const ResourcePage = () => {
                                 <input type="text" placeholder="Search resources..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="pl-12 pr-4 py-3 bg-black/20 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50 backdrop-blur-sm transition-all duration-200 w-full sm:w-64" />
                             </div>
                             {user?.role === 'admin' && (
-                                <motion.button onClick={() => openFormModal()} className="group relative bg-gradient-to-r from-pink-500 to-purple-600 text-white px-6 py-3 rounded-xl flex items-center justify-center gap-2 font-semibold shadow-lg hover:shadow-purple-500/25 transition-all duration-300 whitespace-nowrap" whileHover={{ scale: 1.05, y: -2 }} whileTap={{ scale: 0.95 }}>
+                                <motion.button onClick={() => openFormModal()} className="group relative bg-gradient-to-r from-purple-600 via-purple-500 to-indigo-600 hover:from-purple-700 hover:via-purple-600 hover:to-indigo-700 text-white px-8 py-4 rounded-2xl flex items-center gap-3 font-semibold shadow-2xl hover:shadow-purple-500/25 transition-all duration-300" whileHover={{ scale: 1.05, y: -2 }} whileTap={{ scale: 0.95 }}>
                                     <Plus size={20} className="group-hover:rotate-90 transition-transform duration-300" />Add Resource
                                 </motion.button>
                             )}
@@ -285,7 +285,7 @@ const ResourcePage = () => {
 
 const ResourceList = ({ list, type, openModal, isAdmin, onEdit, onDelete }) => {
     if (list.length === 0) {
-        return ( <motion.div className="text-center py-20" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}> <div className="bg-black/20 backdrop-blur-sm rounded-3xl p-12 max-w-lg mx-auto border border-white/10"> <motion.div animate={{ scale: [1, 1.05, 1] }} transition={{ duration: 2, repeat: Infinity }} className="mx-auto w-fit"> <BookOpen size={64} className="text-gray-500 mb-6" /> </motion.div> <h3 className="text-2xl font-semibold text-gray-300 mb-3">No {type}s Found</h3> <p className="text-gray-400 mb-6">{!isAdmin ? "Check back later for new materials." : "Be the first to contribute to this subject!"}</p> {isAdmin && ( <motion.button onClick={() => openModal()} className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}> Add First Resource </motion.button> )} </div> </motion.div> );
+        return ( <motion.div className="text-center py-20" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}> <div className="bg-black/20 backdrop-blur-sm rounded-3xl p-12 max-w-lg mx-auto border border-white/10"> <motion.div animate={{ scale: [1, 1.05, 1] }} transition={{ duration: 2, repeat: Infinity }} className="mx-auto w-fit"> <BookOpen size={64} className="text-gray-500 mb-6" /> </motion.div> <h3 className="text-2xl font-semibold text-gray-300 mb-3">No {type}s Found</h3> <p className="text-gray-400 mb-6">{!isAdmin ? "Check back later for new materials." : "Be the first to contribute to this subject!"}</p> {isAdmin && ( <motion.button onClick={() => openModal()} className=" bg-gradient-to-r from-purple-600 via-purple-500 to-indigo-600 hover:from-purple-700 hover:via-purple-600 hover:to-indigo-700 text-white px-8 py-4 rounded-2xl flex items-center gap-3 font-semibold shadow-2xl hover:shadow-purple-500/25  text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}> Add First Resource </motion.button> )} </div> </motion.div> );
     }
 
     return (
@@ -441,7 +441,7 @@ const FormModal = ({
                     </motion.button>
                     <motion.button
                         type="submit"
-                        className="flex-1 bg-gradient-to-r from-pink-500 to-purple-600 text-white py-3 rounded-xl font-semibold shadow-lg hover:shadow-purple-500/25 transition-all flex items-center justify-center gap-2 group"
+                        className="flex-1 rounded-xl bg-gradient-to-r from-purple-600 via-purple-500 to-indigo-600 hover:from-purple-700 hover:via-purple-600 hover:to-indigo-700 transition-all flex items-center justify-center gap-2 group"
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                     >

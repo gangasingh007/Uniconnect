@@ -6,6 +6,7 @@ import { userAtom } from '../atoms/userAtom';
 import { CalendarCheck2, LibraryBig, BookOpen, Users, GraduationCap, Clock, Sparkles, ArrowRight, Hash } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import InteractiveBackground from './InteractiveBackground';
+import Loader from './Loader'
 
 const HeroSection = () => {
     const [animationDone, setAnimationDone] = useState(false);
@@ -47,11 +48,11 @@ const HeroSection = () => {
             
             <AnimatePresence>
                 {!user ? (
-                    <Loader key="loader" />
+                    <Loader />
                 ) : (
                     <motion.div 
                         key="content"
-                        className="flex flex-col h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full"
+                        className="flex flex-col h-[90vh] max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full"
                         initial="hidden"
                         animate="visible"
                         variants={{ visible: { transition: { staggerChildren: 0.2 } } }}
@@ -61,10 +62,10 @@ const HeroSection = () => {
                             className="flex flex-col sm:flex-row justify-between items-start sm:items-center"
                             variants={{ hidden: { opacity: 0, y: -20 }, visible: { opacity: 1, y: 0 } }}
                         >
-                            <div>
-                                <p className="text-xl font-semibold text-gray-200">{getGreeting()}</p>
-                                <p className="text-sm text-gray-400">{currentTime.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}</p>
-                            </div>
+                            <div className='flex flex-col justify-center items-center-safe'>
+                                    <p className="px-2 text-xl font-semibold text-purple-400">{getGreeting()}</p>
+                                    <p className="text-sm text-gray-400">{currentTime.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}</p>
+                                </div>
                             <motion.div 
                                 className="flex items-center gap-3 bg-black/20 backdrop-blur-sm px-4 py-2 mt-4 sm:mt-0 rounded-xl border border-white/10 shadow-lg"
                                 whileHover={{ scale: 1.05, backgroundColor: "rgba(0,0,0,0.3)" }}
@@ -129,39 +130,7 @@ const HeroSection = () => {
     );
 };
 
-// --- Helper Components ---
 
-const Loader = () => (
-    <motion.div
-        key="loader"
-        className="w-full h-full flex flex-col items-center justify-center text-white"
-        exit={{ opacity: 0, scale: 0.95 }}
-        transition={{ duration: 0.5 }}
-    >
-        <div className="relative w-24 h-24 mb-6">
-            <motion.div 
-                className="w-full h-full border-4 border-purple-500/30 border-t-purple-500 rounded-full"
-                animate={{ rotate: 360 }}
-                transition={{ duration: 1, loop: Infinity, ease: "linear" }}
-            />
-            <motion.div 
-                className="absolute inset-2 w-20 h-20 border-4 border-blue-400/30 border-b-blue-400 rounded-full"
-                animate={{ rotate: -360 }}
-                transition={{ duration: 1.5, loop: Infinity, ease: "linear" }}
-            />
-            <Sparkles className="absolute inset-0 m-auto w-8 h-8 text-purple-300 animate-pulse" />
-        </div>
-        <div className="text-center text-xl font-medium text-purple-200 h-8">
-            <Typewriter
-                options={{
-                    strings: ['Authenticating...', 'Loading resources...', 'Personalizing dashboard...'],
-                    autoStart: true, loop: true, delay: 60, deleteSpeed: 30
-                }}
-            />
-        </div>
-        <p className="text-gray-400 text-sm mt-2">Preparing your academic hub</p>
-    </motion.div>
-);
 
 const InfoBadge = ({ icon: Icon, text }) => {
     if (!text) return null;

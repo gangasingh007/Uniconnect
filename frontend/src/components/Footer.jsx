@@ -225,31 +225,43 @@ const Footer = () => {
             </div>
 
 
-            {/* Social Links */}
-            <div>
-              <p className="text-gray-400 text-sm mb-3">Follow</p>
-              <div className="flex gap-3">
-                {socialLinks.map((social, index) => {
-                  const Icon = social.icon;
-                  return (
-                    <motion.a
-                      key={social.label}
-                      href={social.href}
-                      className="p-2 rounded-lg bg-[#252540] hover:bg-[#2f2f4a] text-gray-400 hover:text-white transition-all duration-300 group"
-                      whileHover={{ scale: 1.1, y: -2 }}
-                      whileTap={{ scale: 0.95 }}
-                      initial={{ opacity: 0, scale: 0.8 }}
-                      whileInView={{ opacity: 1, scale: 1 }}
-                      transition={{ duration: 0.4, delay: index * 0.1 }}
-                      viewport={{ once: true }}
-                      target='new'
-                    >
-                      <Icon className="w-4 h-4 group-hover:scale-110 transition-transform duration-300" />
-                    </motion.a>
-                  );
-                })}
-              </div>
-            </div>
+      <div>
+        <p className="text-gray-400 text-sm mb-3 tracking-wide ">Follow</p>
+        <div className="flex gap-3">
+          {socialLinks.map((social, index) => {
+            const Icon = social.icon;
+            return (
+              <motion.a
+                key={social.label}
+                href={social.href}
+                className="relative group p-2.5 rounded-xl bg-[#1e1e32] text-gray-400 
+                          shadow-inner shadow-black/20
+                          hover:text-white transition-all duration-300"
+                whileHover={{ scale: 1.15, y: -3 }}
+                whileTap={{ scale: 0.9 }}
+                initial={{ opacity: 0, scale: 0.8 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{ type: "spring", stiffness: 300, damping: 20, delay: index * 0.08 }}
+                viewport={{ once: true }}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {/* Icon */}
+                <Icon className="w-5 h-5 relative z-10 group-hover:scale-110 transition-transform duration-300" />
+
+                {/* Glow ring on hover */}
+                <span className="absolute inset-0 rounded-xl bg-gradient-to-tr from-purple-500/20 via-pink-500/20 to-blue-500/20 
+                                opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-sm"></span>
+
+                {/* Border highlight */}
+                <span className="absolute inset-0 rounded-xl border border-transparent 
+                                group-hover:border-purple-500/30 transition-all duration-500"></span>
+              </motion.a>
+            );
+          })}
+        </div>
+      </div>
+
           </motion.div>
         </div>
 

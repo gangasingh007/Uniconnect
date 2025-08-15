@@ -8,7 +8,7 @@ const resourceSchema = new mongoose.Schema({
     class: { type: mongoose.Schema.Types.ObjectId, ref: "Class", required: true },
     createdBy: { type: String, required: true },
     // NEW FIELD: Store the extracted text content
-    content: { type: String, default:"" } 
+    content: { type: String} 
 }, { timestamps: true });
 
 const Resource = mongoose.model("Resource", resourceSchema);
