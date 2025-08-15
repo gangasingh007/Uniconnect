@@ -235,7 +235,6 @@ const MobileNav = ({ navLinks }) => {
                 <Menu className="text-white group-hover:text-purple-200 transition-colors duration-300" size={20} />
             </motion.button>
 
-            {/* Menu Drawer */}
             <AnimatePresence>
                 {isOpen && (
                     <>
