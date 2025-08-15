@@ -9,6 +9,7 @@ import Footer from '../components/Footer';
 import Navbar from '../components/Navbar';
 import { subjectAtom } from '../atoms/subjectAtom';
 import { useNavigate } from 'react-router-dom';
+import InteractiveBackground from '../components/InteractiveBackground';
 
 const SubjectPage = () => {
   const user = useRecoilValue(userAtom);
@@ -165,7 +166,7 @@ const SubjectPage = () => {
   return (
     <>
     < Navbar />
-      <div className="min-h-screen b p-4 sm:p-6">
+      <div className="min-h-screen b p-4 sm:p-6"><InteractiveBackground />
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

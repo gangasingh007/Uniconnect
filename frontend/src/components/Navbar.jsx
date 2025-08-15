@@ -1,25 +1,25 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, NavLink } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { LogOut, User, ChevronDown, BookOpenCheck, CalendarClock, ChevronLeftIcon,Menu, X, BookOpen, Home, Sparkles } from 'lucide-react';
+import { LogOut, User, ChevronDown, BookOpenCheck, CalendarClock, Menu, X, BookOpen, Home, Sparkles, Compass } from 'lucide-react';
 import { userAtom } from '../atoms/userAtom';
 import { loadingAtom } from '../atoms/states.atom';
 
-// NEW: Color mapping to ensure Tailwind CSS generates all required classes
+// Color mapping to ensure Tailwind CSS generates all required classes
 const colorMap = {
     purple: { text: 'text-purple-400', gradient: 'from-purple-500 to-purple-600' },
     blue: { text: 'text-blue-400', gradient: 'from-blue-500 to-cyan-500' },
     green: { text: 'text-green-400', gradient: 'from-green-500 to-emerald-500' },
     orange: { text: 'text-orange-400', gradient: 'from-orange-500 to-pink-500' },
+    cyan: { text: 'text-cyan-400', gradient: 'from-cyan-500 to-sky-500' },
 };
 
 // Main Navbar Component
 const Navbar = () => {
     const user = useRecoilValue(userAtom);
     const [scrolled, setScrolled] = useState(false);
-    const navigate = useNavigate()
 
     useEffect(() => {
         const handleScroll = () => setScrolled(window.scrollY > 10);
@@ -30,9 +30,9 @@ const Navbar = () => {
     const navLinks = [
         { href: "/", icon: Home, label: "Dashboard", color: "purple" },
         { href: "/subjects", icon: BookOpen, label: "Subjects", color: "blue" },
+        { href: "/explore", icon: Compass, label: "Explore", color: "cyan" },
         { href: "Syllabus.html", icon: BookOpenCheck, label: "Syllabus", color: "green", external: true },
         { href: "Datesheet.html", icon: CalendarClock, label: "Datesheet", color: "orange", external: true },
-
     ];
 
     return (
@@ -46,11 +46,22 @@ const Navbar = () => {
                     : 'bg-transparent border-b border-transparent'
             }`}
         >
-            <Logo />
-            <DesktopNav navLinks={navLinks} />
-            <div className="flex items-center gap-3">
-                {user && <ProfileDropdown user={user} />}
-                <MobileNav navLinks={navLinks} />
+            {/* Left Side */}
+            <div className="flex-1 flex justify-start">
+                <Logo />
+            </div>
+
+            {/* Center Navigation */}
+            <div className="flex-none hidden lg:flex">
+                <DesktopNav navLinks={navLinks} />
+            </div>
+
+            {/* Right Side */}
+            <div className="flex-1 flex justify-end">
+                <div className="flex items-center gap-3">
+                    {user && <ProfileDropdown user={user} />}
+                    <MobileNav navLinks={navLinks} />
+                </div>
             </div>
         </motion.nav>
     );
@@ -62,9 +73,7 @@ const Logo = () => (
     <motion.a href="/" className="relative text-2xl sm:text-3xl font-bold cursor-pointer group">
         <motion.div
             className="absolute -inset-2.5 bg-gradient-to-r from-purple-600/20 via-blue-500/20 to-pink-500/20 rounded-lg blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-            animate={{
-                rotate: [0, 360],
-            }}
+            animate={{ rotate: [0, 360] }}
             transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
         />
         <span className="relative bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
@@ -77,38 +86,52 @@ const Logo = () => (
 const DesktopNav = ({ navLinks }) => {
     const [activeLink, setActiveLink] = useState(null);
 
+    // --- REFACTORED LINK COMPONENT to handle NavLink and <a> correctly ---
+    const NavItem = ({ link }) => {
+        const commonClasses = "relative flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full z-10 transition-colors duration-300";
+
+        if (link.external) {
+            return (
+                <a href={link.href} target="_blank" rel="noopener noreferrer" className={`${commonClasses} text-gray-300 hover:text-white`}>
+                    <link.icon className={`${colorMap[link.color].text} w-4 h-4`} />
+                    <span>{link.label}</span>
+                </a>
+            );
+        }
+
+        return (
+            <NavLink to={link.href} className={({ isActive }) => `${commonClasses} ${isActive ? 'text-white' : 'text-gray-300 hover:text-white'}`}>
+                <link.icon className={`${colorMap[link.color].text} w-4 h-4`} />
+                <span>{link.label}</span>
+            </NavLink>
+        );
+    };
+
     return (
-        <div className="hidden lg:flex items-center gap-2 bg-black/20 border border-white/10 rounded-full px-3 py-1.5 shadow-inner shadow-black/20">
+        <div className="flex items-center gap-1 bg-black/20 border border-white/10 rounded-full px-2 py-1.5 shadow-inner shadow-black/20">
             {navLinks.map((link) => (
-                <motion.a
+                <motion.div
                     key={link.label}
-                    href={link.href}
-                    target={link.external ? "_blank" : "_self"}
-                    rel={link.external ? "noopener noreferrer" : ""}
                     onHoverStart={() => setActiveLink(link.label)}
                     onHoverEnd={() => setActiveLink(null)}
-                    className="relative flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-300 hover:text-white duration-300 rounded-full z-10"
-                    whileHover={{ scale: 1.05 }}
-                    transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                    className="relative"
                 >
-                    <link.icon
-                        className={`${colorMap[link.color].text} w-4 h-4 transition-colors duration-300`}
-                    />
-                    <span>{link.label}</span>
-
+                    <NavItem link={link} />
                     {activeLink === link.label && (
                         <motion.div
                             layoutId="desktop-nav-indicator"
-                            className="absolute inset-0 rounded-full bg-white/10 opacity-1 "
+                            className="absolute inset-0 rounded-full bg-white/10"
                             transition={{ type: "spring", stiffness: 300, damping: 25 }}
                         />
                     )}
-                </motion.a>
+                </motion.div>
             ))}
         </div>
     );
 };
 
+// ... The rest of your components (ProfileDropdown, MobileNav, MenuItem) remain the same.
+// Paste them here if needed, but they are unchanged.
 
 const ProfileDropdown = ({ user }) => {
     const [isOpen, setIsOpen] = useState(false);
@@ -143,9 +166,7 @@ const ProfileDropdown = ({ user }) => {
                 className="relative flex items-center gap-2 px-2 py-1.5 rounded-full bg-black/30 hover:bg-black/50 border border-white/20 hover:border-purple-500/50 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-purple-500/50 group"
                 whileTap={{ scale: 0.97 }}
             >
-                <motion.div 
-                    className="relative w-8 h-8 rounded-full bg-gradient-to-br from-purple-600 via-blue-500 to-pink-500 flex items-center justify-center text-white font-bold text-sm"
-                >
+                <motion.div className="relative w-8 h-8 rounded-full bg-gradient-to-br from-purple-600 via-blue-500 to-pink-500 flex items-center justify-center text-white font-bold text-sm">
                     {user?.firstName?.charAt(0).toUpperCase() || 'U'}
                 </motion.div>
                 
@@ -224,95 +245,33 @@ const MobileNav = ({ navLinks }) => {
 
     return (
         <div className="lg:hidden">
-            {/* Open Menu Button */}
-            <motion.button
-                onClick={() => setIsOpen(true)}
-                className="p-3 rounded-full bg-black/40 border border-white/20 
-                           shadow-lg shadow-purple-900/30 backdrop-blur-md
-                           transition-all duration-300 group"
-                whileTap={{ scale: 0.95 }}
-            >
+            <motion.button onClick={() => setIsOpen(true)} className="p-3 rounded-full bg-black/40 border border-white/20 shadow-lg shadow-purple-900/30 backdrop-blur-md transition-all duration-300 group" whileTap={{ scale: 0.95 }}>
                 <Menu className="text-white group-hover:text-purple-200 transition-colors duration-300" size={20} />
             </motion.button>
 
             <AnimatePresence>
                 {isOpen && (
                     <>
-                        {/* Backdrop */}
-                        <motion.div
-                            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                            onClick={() => setIsOpen(false)}
-                            className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm"
-                        />
-
-                        {/* Drawer */}
-                        <motion.div
-                            variants={menuVariants} initial="closed" animate="open" exit="closed"
-                            className="fixed top-0 right-0 bottom-0 z-50 w-full max-w-sm 
-                                       bg-gradient-to-br from-black/70 to-gray-900/80
-                                       backdrop-blur-2xl border-l border-white/10 
-                                       shadow-2xl shadow-black/60"
-                        >
+                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsOpen(false)} className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm" />
+                        <motion.div variants={menuVariants} initial="closed" animate="open" exit="closed" className="fixed top-0 right-0 bottom-0 z-50 w-full max-w-sm bg-gradient-to-br from-black/70 to-gray-900/80 backdrop-blur-2xl border-l border-white/10 shadow-2xl shadow-black/60">
                             <div className="p-6 h-full flex flex-col">
-                                {/* Header */}
                                 <div className="flex justify-between items-center mb-6 pb-4 border-b border-white/20">
                                     <Logo />
-                                    <motion.button
-                                        onClick={() => setIsOpen(false)}
-                                        className="p-2 rounded-full bg-white/5 hover:bg-red-500/20 
-                                                   hover:shadow-red-500/30 hover:shadow-md 
-                                                   transition-all duration-300 group"
-                                        whileHover={{ scale: 1.1, rotate: 90 }}
-                                        whileTap={{ scale: 0.9 }}
-                                    >
+                                    <motion.button onClick={() => setIsOpen(false)} className="p-2 rounded-full bg-white/5 hover:bg-red-500/20 hover:shadow-red-500/30 hover:shadow-md transition-all duration-300 group" whileHover={{ scale: 1.1, rotate: 90 }} whileTap={{ scale: 0.9 }}>
                                         <X className="text-gray-300 group-hover:text-red-400 transition-colors" size={24} />
                                     </motion.button>
                                 </div>
-
-                                {/* Links */}
                                 <motion.ul variants={listVariants} className="flex flex-col gap-3">
                                     {navLinks.map((link) => (
                                         <motion.li key={link.label} variants={itemVariants}>
-                                            <a
-                                                href={link.href}
-                                                target={link.external ? "_blank" : "_self"}
-                                                rel={link.external ? "noopener noreferrer" : ""}
-                                                onClick={() => setIsOpen(false)}
-                                                className="relative flex items-center gap-4 p-4 text-lg font-medium 
-                                                           text-gray-200 hover:text-white rounded-lg 
-                                                           bg-white/5 hover:bg-white/10
-                                                           shadow-sm hover:shadow-lg hover:shadow-purple-500/20
-                                                           transition-all duration-300 group"
-                                            >
-                                                {/* Side color bar */}
-                                                <div className={`absolute left-0 top-0 bottom-0 w-1 rounded-l-lg 
-                                                                bg-gradient-to-b ${colorMap[link.color].gradient} 
-                                                                opacity-0 group-hover:opacity-100 
-                                                                transition-opacity duration-300`} />
-                                                {/* Icon */}
-                                                <link.icon
-                                                    className={`${colorMap[link.color].text} 
-                                                                group-hover:scale-110 
-                                                                group-hover:drop-shadow-[0_0_6px_rgba(255,255,255,0.4)] 
-                                                                transition-transform duration-300`}
-                                                    size={24}
-                                                />
-                                                {/* Label */}
+                                            <a href={link.href} target={link.external ? "_blank" : "_self"} rel={link.external ? "noopener noreferrer" : ""} onClick={() => setIsOpen(false)} className="relative flex items-center gap-4 p-4 text-lg font-medium text-gray-200 hover:text-white rounded-lg bg-white/5 hover:bg-white/10 shadow-sm hover:shadow-lg hover:shadow-purple-500/20 transition-all duration-300 group">
+                                                <div className={`absolute left-0 top-0 bottom-0 w-1 rounded-l-lg bg-gradient-to-b ${colorMap[link.color].gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
+                                                <link.icon className={`${colorMap[link.color].text} group-hover:scale-110 group-hover:drop-shadow-[0_0_6px_rgba(255,255,255,0.4)] transition-transform duration-300`} size={24} />
                                                 <span className="relative z-10">{link.label}</span>
                                             </a>
                                         </motion.li>
                                     ))}
-
-                                    {/* Logout */}
-                                    <motion.button
-                                        onClick={handleLogout}
-                                        variants={itemVariants}
-                                        className="flex items-center gap-4 py-4 px-4 text-lg font-medium 
-                                                   text-gray-200 hover:text-white rounded-lg 
-                                                   bg-white/5 hover:bg-red-500/20
-                                                   hover:shadow-red-500/30 hover:shadow-md
-                                                   transition-all duration-300"
-                                    >
+                                    <motion.button onClick={handleLogout} variants={itemVariants} className="flex items-center gap-4 py-4 px-4 text-lg font-medium text-gray-200 hover:text-white rounded-lg bg-white/5 hover:bg-red-500/20 hover:shadow-red-500/30 hover:shadow-md transition-all duration-300">
                                         <LogOut className='text-red-400' size={24} /> Sign Out
                                     </motion.button>
                                 </motion.ul>
@@ -325,18 +284,8 @@ const MobileNav = ({ navLinks }) => {
     );
 };
 
-
 const MenuItem = ({ icon: Icon, label, onClick, isDanger = false }) => (
-    <motion.button
-        onClick={onClick}
-        className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm transition-colors duration-200 ${
-            isDanger 
-                ? 'text-red-400 hover:bg-red-500/10 hover:text-red-300' 
-                : 'text-gray-300 hover:bg-white/5 hover:text-white'
-        }`}
-        whileHover={{ x: 4 }}
-        transition={{ type: 'spring', stiffness: 400, damping: 15 }}
-    >
+    <motion.button onClick={onClick} className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm transition-colors duration-200 ${isDanger ? 'text-red-400 hover:bg-red-500/10 hover:text-red-300' : 'text-gray-300 hover:bg-white/5 hover:text-white'}`} whileHover={{ x: 4 }} transition={{ type: 'spring', stiffness: 400, damping: 15 }}>
         <Icon size={16} />
         <span>{label}</span>
     </motion.button>

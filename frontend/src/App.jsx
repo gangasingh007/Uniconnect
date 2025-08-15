@@ -15,6 +15,7 @@ import ProfilePage from './pages/ProfilePage'
 import SubjectPage from './pages/SubjectPage'
 import { classAtom } from './atoms/classAtom'
 import ResourcePage from './pages/ResourcePage'
+import ExplorePage from './pages/ExplorePage'
 
 
 const App = () => {
@@ -136,6 +137,9 @@ const App = () => {
         <Route path="/subjects/resource" element={<ProtectedRoute>
           <ResourcePage />
         </ProtectedRoute>} />
+        <Route path='/explore' element={<ProtectedRoute>
+        <ExplorePage></ExplorePage>
+      </ProtectedRoute>}/>
       </Routes>
     </BrowserRouter>}
     </div>
