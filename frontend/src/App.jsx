@@ -18,6 +18,7 @@ import ResourcePage from './pages/ResourcePage'
 import ExplorePage from './pages/ExplorePage'
 import Syllabus from './pages/Syllabus'
 import DateSheet from './pages/DateSheet'
+import AcademicCalender from './pages/AcademicCalender'
 
 
 const App = () => {
@@ -147,6 +148,9 @@ const App = () => {
       </ProtectedRoute>}/>
         <Route path='/datesheet' element={<ProtectedRoute>
         <DateSheet />
+      </ProtectedRoute>}/>
+        <Route path='/ac-calendar' element={<ProtectedRoute>
+        <AcademicCalender />
       </ProtectedRoute>}/>
       </Routes>
     </BrowserRouter>}

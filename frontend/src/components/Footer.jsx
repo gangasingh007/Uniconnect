@@ -33,7 +33,7 @@ const Footer = () => {
 
   const resources = [
     { name: 'Study Materials', href: '/subjects',target:null },
-    { name: 'Academic Calendar', href: 'Calender.html',target:"new" },
+    { name: 'Academic Calendar', href: '/ac-calendar',target:"new" },
   ];
 
 
