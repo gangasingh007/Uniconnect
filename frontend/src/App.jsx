@@ -16,6 +16,8 @@ import SubjectPage from './pages/SubjectPage'
 import { classAtom } from './atoms/classAtom'
 import ResourcePage from './pages/ResourcePage'
 import ExplorePage from './pages/ExplorePage'
+import Syllabus from './pages/Syllabus'
+import DateSheet from './pages/DateSheet'
 
 
 const App = () => {
@@ -33,7 +35,7 @@ const App = () => {
           setLoading(false);
           return;
         }
-        const res = await axios.get("http://localhost:3000/api/v1/auth/student/me", {
+        const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/v1/auth/student/me`, {
           headers: {
             authorization: `Bearer ${token}`
           }
@@ -139,6 +141,12 @@ const App = () => {
         </ProtectedRoute>} />
         <Route path='/explore' element={<ProtectedRoute>
         <ExplorePage></ExplorePage>
+      </ProtectedRoute>}/>
+        <Route path='/syllabus' element={<ProtectedRoute>
+        <Syllabus />
+      </ProtectedRoute>}/>
+        <Route path='/datesheet' element={<ProtectedRoute>
+        <DateSheet />
       </ProtectedRoute>}/>
       </Routes>
     </BrowserRouter>}

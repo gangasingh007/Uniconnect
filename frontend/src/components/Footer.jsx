@@ -26,8 +26,8 @@ const Footer = () => {
     { name: 'Dashboard', href: '/' },
     { name: 'Subjects', href: '/subjects' },
     { name: 'Profile', href: '/profile' },
-    { name: 'Syllabus', href: 'Syllabus.html', external: true },
-    { name: 'Datesheet', href: 'Datesheet.html', external: true }
+    { name: 'Syllabus', href: '/syllabus', external: true },
+    { name: 'Datesheet', href: '/datesheet', external: true }
   ];
 
 

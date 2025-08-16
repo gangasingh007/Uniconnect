@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion';
 import { useRecoilValue } from 'recoil';
-import Typewriter from 'typewriter-effect';
 import { userAtom } from '../atoms/userAtom';
 import { CalendarCheck2, LibraryBig, BookOpen, Users, GraduationCap, Clock, Sparkles, ArrowRight, Hash } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -33,8 +32,8 @@ const HeroSection = () => {
 
     const quickActions = [
         { icon: BookOpen, label: 'View Subjects', color: 'from-purple-500 to-blue-500', onClick: () => navigate('/subjects'), description: 'Browse your course subjects' },
-        { icon: CalendarCheck2, label: 'Datesheet', color: 'from-blue-500 to-cyan-500', onClick: () => window.open('Datesheet.html', '_blank'), description: 'Check your exam schedule' },
-        { icon: LibraryBig, label: 'Syllabus', color: 'from-green-500 to-teal-500', onClick: () => window.open('Syllabus.html', '_blank'), description: 'Review your curriculum' }
+        { icon: CalendarCheck2, label: 'Datesheet', color: 'from-blue-500 to-cyan-500', onClick: () => navigate("/datesheet"), description: 'Check your exam schedule' },
+        { icon: LibraryBig, label: 'Syllabus', color: 'from-green-500 to-teal-500', onClick: () => navigate("/syllabus"), description: 'Review your curriculum' }
     ];
 
     return (
