@@ -211,7 +211,7 @@ const EditProfileModal = ({ isOpen, onClose, user, setUser }) => {
             if (!payload.password) delete payload.password;
             delete payload.confirmPassword;
 
-            const res = await fetch("http://localhost:3000/api/v1/auth/student/update", {
+            const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/v1/auth/student/update`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json", "authorization": `Bearer ${token}` },
                 body: JSON.stringify(payload)

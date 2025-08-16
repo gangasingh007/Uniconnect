@@ -77,7 +77,7 @@ const ResourcePage = () => {
         setError('');
         try {
             const token = localStorage.getItem('token');
-            const res = await axios.get(`http://localhost:3000/api/v1/resource/${user.classId}/${subjectId}`, { headers: { authorization: `Bearer ${token}` } });
+            const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/v1/resource/${user.classId}/${subjectId}`, { headers: { authorization: `Bearer ${token}` } });
             setResources(res.data.resources || []);
         } catch (err) {
             const msg = err.response?.data?.message || 'Failed to fetch resources.';
@@ -126,7 +126,7 @@ const ResourcePage = () => {
             const headers = { authorization: `Bearer ${token}` };
             
             if (resourceToEdit) { // UPDATE
-                const url = `http://localhost:3000/api/v1/resource/${subjectId}/${user.classId}/${resourceToEdit._id}`;
+                const url = `${import.meta.env.VITE_BACKEND_URL}/api/v1/resource/${subjectId}/${user.classId}/${resourceToEdit._id}`;
                 if (resourceType === 'Yt-Link') {
                     await axios.put(url, { title: newResource.title, link: newResource.link }, { headers });
                 } else {
@@ -138,13 +138,13 @@ const ResourcePage = () => {
                 }
             } else { // ADD
                 if (resourceType === 'Yt-Link') {
-                    await axios.post(`http://localhost:3000/api/v1/resource/${user.classId}/${subjectId}`, { title: newResource.title, link: newResource.link }, { headers });
+                    await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/v1/resource/${user.classId}/${subjectId}`, { title: newResource.title, link: newResource.link }, { headers });
                 } else {
                     const formData = new FormData();
                     formData.append('title', newResource.title);
                     formData.append('file', newResource.file);
                     headers['Content-Type'] = 'multipart/form-data';
-                    await axios.post(`http://localhost:3000/api/v1/resource/upload/${user.classId}/${subjectId}`, formData, { headers });
+                    await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/v1/resource/upload/${user.classId}/${subjectId}`, formData, { headers });
                 }
             }
             toast.success(`Resource ${resourceToEdit ? 'updated' : 'added'}!`, { id: toastId });
@@ -161,7 +161,7 @@ const ResourcePage = () => {
         const token = localStorage.getItem('token');
         const toastId = toast.loading('Deleting resource...');
         try {
-            await axios.delete(`http://localhost:3000/api/v1/resource/${user.classId}/${subjectId}/${resourceToDelete._id}`, { headers: { authorization: `Bearer ${token}` } });
+            await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/api/v1/resource/${user.classId}/${subjectId}/${resourceToDelete._id}`, { headers: { authorization: `Bearer ${token}` } });
             toast.success('Resource deleted!', { id: toastId });
             closeDeleteModal();
             fetchResources();
