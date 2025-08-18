@@ -11,7 +11,6 @@ import {
 import { userAtom } from '../atoms/userAtom';
 import { loadingAtom } from '../atoms/states.atom';
 
-// Custom hook for authentication logic
 const useAuth = () => {
     const navigate = useNavigate();
     const [, setLoading] = useRecoilState(loadingAtom);
