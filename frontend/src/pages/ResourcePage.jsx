@@ -295,8 +295,7 @@ const ResourceList = ({ list, type, openModal, isAdmin, onEdit, onDelete }) => {
         <div className="bg-black/20 backdrop-blur-sm rounded-2xl border border-white/10 overflow-hidden">
             <div className="hidden md:grid grid-cols-12 gap-4 items-center px-6 py-4 border-b border-white/10 text-sm font-semibold text-gray-400 uppercase tracking-wider">
                 <div className="col-span-6">Title</div>
-                <div className="col-span-2 text-center">Date Added</div>
-                <div className="col-span-2 text-center">Author</div>
+                <div className="col-span-2 text-center">Added By</div>
                 <div className="col-span-2 text-right">Actions</div>
             </div>
             <motion.div layout>
@@ -321,12 +320,12 @@ const ResourceRow = ({ resource, isAdmin, onEdit, onDelete }) => {
                 <div className="flex-1 overflow-hidden">
                     <p className="font-semibold text-white group-hover:text-purple-300 transition-colors line-clamp-1">{resource.title}</p>
                     <div className="md:hidden flex items-center gap-4 text-xs text-gray-500 mt-1">
-                        <div className="flex items-center gap-1.5"><Calendar size={12} /><span>{new Date(resource.createdAt).toLocaleDateString()}</span></div>
+                        {/* <div className="flex items-center gap-1.5"><Calendar size={12} /><span>{new Date(resource.createdAt).toLocaleDateString()}</span></div> */}
                         <div className="flex items-center gap-1.5"><User size={12} /><span>{authorName}</span></div>
                     </div>
                 </div>
             </div>
-            <div className="hidden md:col-span-2 md:flex items-center justify-center text-gray-400 text-sm"><span>{new Date(resource.createdAt).toLocaleDateString()}</span></div>
+            {/* <div className="hidden md:col-span-2 md:flex items-center justify-center text-gray-400 text-sm"><span>{new Date(resource.createdAt).toLocaleDateString()}</span></div> */}
             <div className="hidden md:col-span-2 md:flex items-center justify-center text-gray-400 text-sm"><span>{authorName}</span></div>
             <div className="col-span-12 md:col-span-2 flex items-center justify-end gap-2">
                 <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -369,7 +368,7 @@ const FormModal = ({ isOpen, onClose, onSubmit, resourceToEdit, activeTab, newRe
                                 whileTap={{ scale: 0.98 }}
                                 >
                                 <CheckCircle2 className="w-5 h-5 group-hover:scale-110 transition-transform" />
-                                {resourceToEdit ? 'Update Resource' : 'Add Resource'}
+                                {resourceToEdit ? 'Save Changes' : 'Add Resource'}
                             </motion.button>
 
                         </div>

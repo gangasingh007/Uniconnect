@@ -4,56 +4,80 @@ import { useRecoilState } from 'recoil';
 import { userAtom } from '../atoms/userAtom';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
+import Navbar from '../components/Navbar'; // ADDED
 import Footer from '../components/Footer';
-import { 
-    User, Edit3, Mail, GraduationCap, Calendar, Hash, Book, Users, X, Eye, EyeOff, 
-    ArrowLeft, CheckCircle2, AlertCircle, Lock, Camera, Sparkles, 
+import {
+    User, Edit3, Mail, GraduationCap, Calendar, Hash, Book, Users, X, Eye, EyeOff,
+    ArrowLeft, CheckCircle2, AlertCircle, Lock, Camera, Sparkles,
     ShieldCheck
 } from 'lucide-react';
 import InteractiveBackground from '../components/InteractiveBackground';
 
-// Main Page Component
+// ... (Helper components remain unchanged, see original code above) ...
+
 const ProfilePage = () => {
     const [user, setUser] = useRecoilState(userAtom);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const navigate = useNavigate();
 
+    // If user is missing, redirect to login or show loader
+    useEffect(() => {
+        if (user === null) {
+            navigate("/login");
+        }
+    }, [user, navigate]);
+
+    if (!user) {
+        // Optional: Show loader if user state is not initialized yet
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#0a0a0f] via-[#141423] to-[#1a1a2e]">
+                <span className="text-white text-xl">Loading...</span>
+            </div>
+        );
+    }
+
     return (
         <>
             <div className="relative min-h-screen w-full text-white overflow-hidden">
-                <div className="absolute inset-0 -z-10"><InteractiveBackground /></div>
-                
+                <div className="absolute inset-0 -z-10">
+                    <InteractiveBackground />
+                </div>
                 <div className="relative z-10 p-4 sm:p-6 lg:p-8">
                     <motion.div
                         className="max-w-7xl mx-auto"
                         initial="hidden"
                         animate="visible"
-                        variants={{ hidden: { opacity: 0 }, visible: { opacity: 1, transition: { staggerChildren: 0.1 } } }}
+                        variants={{
+                            hidden: { opacity: 0 },
+                            visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
+                        }}
                     >
                         <PageHeader navigate={navigate} />
-
-                        {/* --- NEW TWO-COLUMN LAYOUT --- */}
+                        {/* Two-Column Layout */}
                         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                            
                             {/* Left Sidebar */}
-                            <motion.div 
+                            <motion.div
                                 className="lg:col-span-4"
-                                variants={{ hidden: { opacity: 0, x: -30 }, visible: { opacity: 1, x: 0, transition: { duration: 0.8 } } }}
+                                variants={{
+                                    hidden: { opacity: 0, x: -30 },
+                                    visible: { opacity: 1, x: 0, transition: { duration: 0.8 } }
+                                }}
                             >
                                 <ProfileSidebar user={user} onEditClick={() => setIsEditModalOpen(true)} />
                             </motion.div>
-
                             {/* Right Content Area */}
-                            <motion.div 
+                            <motion.div
                                 className="lg:col-span-8 space-y-8"
-                                variants={{ hidden: { opacity: 0, x: 30 }, visible: { opacity: 1, x: 0, transition: { duration: 0.8, delay: 0.1 } } }}
+                                variants={{
+                                    hidden: { opacity: 0, x: 30 },
+                                    visible: { opacity: 1, x: 0, transition: { duration: 0.8, delay: 0.1 } }
+                                }}
                             >
                                 <InfoSection title="Personal Details" icon={User}>
                                     <DetailRow label="First Name" value={user?.firstName} />
                                     <DetailRow label="Last Name" value={user?.lastName} />
                                     <DetailRow label="Email Address" value={user?.email} />
                                 </InfoSection>
-
                                 <InfoSection title="Academic Information" icon={GraduationCap}>
                                     <DetailRow label="Course" value={user?.courseName} />
                                     <DetailRow label="Section" value={user?.section} />
@@ -64,12 +88,11 @@ const ProfilePage = () => {
                             </motion.div>
                         </div>
                     </motion.div>
-
-                    <EditProfileModal 
-                        isOpen={isEditModalOpen} 
-                        onClose={() => setIsEditModalOpen(false)} 
-                        user={user} 
-                        setUser={setUser} 
+                    <EditProfileModal
+                        isOpen={isEditModalOpen}
+                        onClose={() => setIsEditModalOpen(false)}
+                        user={user}
+                        setUser={setUser}
                     />
                 </div>
             </div>
@@ -77,8 +100,6 @@ const ProfilePage = () => {
         </>
     );
 };
-
-// --- Helper Components ---
 
 const PageHeader = ({ navigate }) => (
     <motion.div
@@ -157,9 +178,6 @@ const DetailRow = ({ label, value }) => (
 
 
 const EditProfileModal = ({ isOpen, onClose, user, setUser }) => {
-    // This component's internal logic and styling remain unchanged
-    // as it's a well-designed modal overlay.
-    // ... (modal code from previous query) ...
     const [formData, setFormData] = useState({});
     const [isLoading, setIsLoading] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);

@@ -89,7 +89,7 @@ const Login = () => {
                     value={email}
                     onChange={(e) => setemail(e.target.value)}
                     className="w-full pl-12 pr-4 py-3 bg-black/30 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500 transition-all duration-300"
-                    placeholder="Enter Roll Number"
+                    placeholder="Enter your Email"
                     required
                   />
                 </div>

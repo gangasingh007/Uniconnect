@@ -60,14 +60,14 @@ const HeroSection = () => {
                             variants={{ hidden: { opacity: 0, y: -20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.5 } } }}
                         >
                             <div>
-                                <p className="text-xl font-semibold text-purple-300">{getGreeting()}</p>
+                                <p className="text-xl font-semibold text-purple-500">{getGreeting()}</p>
                                 <p className="text-sm text-gray-400">{currentTime.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}</p>
                             </div>
                             <motion.div 
                                 className="flex items-center gap-3 bg-black/30 backdrop-blur-sm px-4 py-2 rounded-xl border border-white/10 shadow-lg"
                                 whileHover={{ scale: 1.05, backgroundColor: "rgba(0,0,0,0.4)" }}
                             >
-                                <Clock className="w-4 h-4 text-purple-300" />
+                                <Clock className="w-4 h-4 text-purple-500" />
                                 <span className="text-lg font-mono font-bold text-gray-200 tracking-wider">
                                     {currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                 </span>
@@ -85,7 +85,7 @@ const HeroSection = () => {
                                     Welcome Back,
                                 </span>
                                 <motion.span 
-                                    className="block mt-1"
+                                    className="block mt-1 pb-1 bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent"
                                     initial={{ opacity: 0, y: 30 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ duration: 0.8, delay: 0.5, type: 'spring', stiffness: 100 }}
