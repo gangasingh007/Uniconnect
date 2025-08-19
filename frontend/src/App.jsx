@@ -19,6 +19,7 @@ import ExplorePage from './pages/ExplorePage'
 import Syllabus from './pages/Syllabus'
 import DateSheet from './pages/DateSheet'
 import AcademicCalender from './pages/AcademicCalender'
+import FileUpload from './components/FileUpload'
 
 
 const App = () => {
@@ -56,71 +57,125 @@ const App = () => {
 
   return (
     <div className='animated-bg'>
-    <Toaster
-  position="top"
+   <Toaster
+  position="top-center"
+  gutter={12}
   toastOptions={{
-    duration: 4000,
+    duration: 4500,
     style: {
-      background: 'linear-gradient(135deg, #1e1e3f99, #2d1b6944)',
-      color: '#e2e8f0',
-      border: '1px solid #7c3aed66',
+      background: 'rgba(15, 15, 35, 0.85)',
+      color: '#f1f5f9',
+      border: '1px solid rgba(139, 92, 246, 0.3)',
       padding: '16px 20px',
-      borderRadius: '16px',
-      boxShadow: '0 8px 32px rgba(124, 58, 237, 0.15), 0 2px 8px rgba(0, 0, 0, 0.2)',
+      borderRadius: '20px',
+      boxShadow: `
+        0 20px 40px -12px rgba(0, 0, 0, 0.4),
+        0 8px 32px rgba(139, 92, 246, 0.12),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1)
+      `,
       fontWeight: 500,
       fontSize: '14px',
-      backdropFilter: 'blur(12px)',
-      WebkitBackdropFilter: 'blur(12px)',
+      lineHeight: '1.5',
+      backdropFilter: 'blur(20px) saturate(180%)',
+      WebkitBackdropFilter: 'blur(20px) saturate(180%)',
       minWidth: '320px',
-      maxWidth: '500px',
+      maxWidth: '480px',
       wordBreak: 'break-word',
-      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+      position: 'relative',
+      overflow: 'hidden',
+      transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+      transform: 'translateZ(0)', // Enable hardware acceleration
     },
+    
     success: {
+      duration: 4000,
       style: {
-        background: 'linear-gradient(135deg, #1e1e3f99, #065f4644)',
-        border: '1px solid #10b98166',
-        boxShadow: '0 8px 32px rgba(16, 185, 129, 0.15), 0 2px 8px rgba(0, 0, 0, 0.2)',
+        background: 'rgba(6, 78, 59, 0.9)',
+        border: '1px solid rgba(34, 197, 94, 0.4)',
+        boxShadow: `
+          0 20px 40px -12px rgba(0, 0, 0, 0.4),
+          0 8px 32px rgba(34, 197, 94, 0.15),
+          inset 0 1px 0 rgba(34, 197, 94, 0.2),
+          0 0 0 1px rgba(34, 197, 94, 0.05)
+        `,
+        color: '#ecfdf5',
       },
       iconTheme: {
-        primary: '#10b981',
-        secondary: '#1e1e2f',
+        primary: '#22c55e',
+        secondary: 'rgba(6, 78, 59, 0.9)',
       },
     },
+    
     error: {
+      duration: 5000,
       style: {
-        background: 'linear-gradient(135deg, #1e1e3f99, #7f1d1d44)',
-        border: '1px solid #ef444466',
-        boxShadow: '0 8px 32px rgba(239, 68, 68, 0.15), 0 2px 8px rgba(0, 0, 0, 0.2)',
+        background: 'rgba(127, 29, 29, 0.9)',
+        border: '1px solid rgba(248, 113, 113, 0.4)',
+        boxShadow: `
+          0 20px 40px -12px rgba(0, 0, 0, 0.4),
+          0 8px 32px rgba(248, 113, 113, 0.15),
+          inset 0 1px 0 rgba(248, 113, 113, 0.2),
+          0 0 0 1px rgba(248, 113, 113, 0.05)
+        `,
+        color: '#fef2f2',
       },
       iconTheme: {
-        primary: '#ef4444',
-        secondary: '#1e1e2f',
+        primary: '#f87171',
+        secondary: 'rgba(127, 29, 29, 0.9)',
       },
     },
+    
     loading: {
+      duration: Infinity,
       style: {
-        background: 'linear-gradient(135deg, #1e1e3f99, #374151)',
-        border: '1px solid #6b728066',
-        boxShadow: '0 8px 32px rgba(107, 114, 128, 0.15), 0 2px 8px rgba(0, 0, 0, 0.2)',
+        background: 'rgba(30, 41, 59, 0.9)',
+        border: '1px solid rgba(148, 163, 184, 0.3)',
+        boxShadow: `
+          0 20px 40px -12px rgba(0, 0, 0, 0.4),
+          0 8px 32px rgba(148, 163, 184, 0.1),
+          inset 0 1px 0 rgba(148, 163, 184, 0.15)
+        `,
+        color: '#f8fafc',
       },
       iconTheme: {
-        primary: '#6b7280',
-        secondary: '#1e1e2f',
+        primary: '#94a3b8',
+        secondary: 'rgba(30, 41, 59, 0.9)',
       },
     },
-    className: '',
+    
+    // Custom styles for different toast types
+    blank: {
+      style: {
+        background: 'rgba(30, 30, 60, 0.85)',
+        border: '1px solid rgba(165, 180, 252, 0.3)',
+        boxShadow: `
+          0 20px 40px -12px rgba(0, 0, 0, 0.4),
+          0 8px 32px rgba(165, 180, 252, 0.12),
+          inset 0 1px 0 rgba(255, 255, 255, 0.08)
+        `,
+      },
+    },
+    
+    // Enhanced accessibility
+    className: 'custom-toast',
     ariaProps: {
-      role: 'status',
-      'aria-live': 'polite',
+      role: 'alert',
+      'aria-live': 'assertive',
+      'aria-atomic': 'true',
     },
   }}
+  
   containerStyle={{
-    top: '20px',
-    zIndex: 9999,
+    top: '24px',
+    left: '50%',
+    transform: 'translateX(-50%)',
+    zIndex: 99999,
+    pointerEvents: 'none',
   }}
+  
   containerClassName="toast-container"
 />
+
 
       {loading ? <Loader /> :
       <BrowserRouter>
@@ -151,6 +206,9 @@ const App = () => {
       </ProtectedRoute>}/>
         <Route path='/ac-calendar' element={<ProtectedRoute>
         <AcademicCalender />
+      </ProtectedRoute>}/>
+        <Route path='/upload' element={<ProtectedRoute>
+        <FileUpload />
       </ProtectedRoute>}/>
       </Routes>
     </BrowserRouter>}

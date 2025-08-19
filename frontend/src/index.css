@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 *{
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif ;
 }
 
 @keyframes grid {
@@ -10,5 +10,113 @@
   }
   100% {
     background-position: 60px 60px;
+  }
+}
+
+/* Enhanced Toast Animations & Effects */
+.toast-container .custom-toast {
+  position: relative;
+  pointer-events: auto;
+  user-select: none;
+}
+
+.toast-container .custom-toast::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
+  transition: left 0.6s ease-in-out;
+  border-radius: inherit;
+}
+
+.toast-container .custom-toast:hover::before {
+  left: 100%;
+}
+
+/* Pulse effect for loading toasts */
+.toast-container .custom-toast[data-type="loading"] {
+  animation: toast-pulse 2s ease-in-out infinite;
+}
+
+@keyframes toast-pulse {
+  0%, 100% {
+    box-shadow: 
+      0 20px 40px -12px rgba(0, 0, 0, 0.4),
+      0 8px 32px rgba(148, 163, 184, 0.1),
+      inset 0 1px 0 rgba(148, 163, 184, 0.15);
+  }
+  50% {
+    box-shadow: 
+      0 20px 40px -12px rgba(0, 0, 0, 0.4),
+      0 8px 32px rgba(148, 163, 184, 0.2),
+      inset 0 1px 0 rgba(148, 163, 184, 0.25);
+  }
+}
+
+/* Enhanced enter animation */
+.toast-container [data-hot-toast-enter] {
+  animation: toast-enter 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+/* Enhanced exit animation */
+.toast-container [data-hot-toast-exit] {
+  animation: toast-exit 0.4s cubic-bezier(0.55, 0.055, 0.675, 0.19) forwards;
+}
+
+@keyframes toast-enter {
+  from {
+    transform: translateY(-100%) scale(0.6);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes toast-exit {
+  from {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(-150%) scale(0.4);
+    opacity: 0;
+  }
+}
+
+/* Hover effects */
+.toast-container .custom-toast:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 
+    0 25px 50px -12px rgba(0, 0, 0, 0.5),
+    0 12px 40px rgba(139, 92, 246, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+/* Focus styles for better accessibility */
+.toast-container .custom-toast:focus-visible {
+  outline: 2px solid rgba(139, 92, 246, 0.6);
+  outline-offset: 2px;
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .toast-container .custom-toast,
+  .toast-container .custom-toast::before {
+    animation: none !important;
+    transition: none !important;
+  }
+  
+  .toast-container .custom-toast:hover {
+    transform: none;
   }
 }

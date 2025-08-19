@@ -10,6 +10,7 @@ import Navbar from '../components/Navbar';
 import { subjectAtom } from '../atoms/subjectAtom';
 import { useNavigate } from 'react-router-dom';
 import InteractiveBackground from '../components/InteractiveBackground';
+import Loader from '../components/Loader';
 
 // --- Custom Hook for API Logic ---
 // This hook centralizes all API interactions and related state (data, loading, error).
@@ -163,7 +164,7 @@ const SubjectGrid = ({ subjects, loading, error, onRetry, onAddClick, onEdit, on
         navigate('/subjects/resource');
     };
 
-    if (loading && subjects.length === 0) return <LoadingState />;
+    if (loading && subjects.length === 0) return <Loader message='Loading Subjects...' />;
     if (error) return <ErrorState message={error} onRetry={onRetry} />;
     if (!loading && subjects.length === 0) return <EmptyState onAddClick={onAddClick} isAdmin={isAdmin} />;
 
@@ -275,8 +276,8 @@ const ActionModal = ({ modalState, onClose, addSubject, updateSubject, deleteSub
         }
         return (
             <form onSubmit={handleSubmit} className="p-8 space-y-6">
-                <FormInput name="title" label="Subject Title" value={formData.title} onChange={handleChange} error={errors.title} placeholder="e.g., Quantum Physics" />
-                <FormInput name="subjectTeacher" label="Subject Teacher" value={formData.subjectTeacher} onChange={handleChange} error={errors.subjectTeacher} placeholder="e.g., Dr. Jane Doe" />
+                <FormInput name="title" label="Subject Title" value={formData.title} onChange={handleChange} error={errors.title} placeholder="Subject Teacher" />
+                <FormInput name="subjectTeacher" label="Subject Teacher" value={formData.subjectTeacher} onChange={handleChange} error={errors.subjectTeacher} placeholder="Subject Teacher's Name" />
                 <div className="flex gap-4 pt-4">
                     <ActionButton fullWidth variant="secondary" type="button" onClick={onClose}>Cancel</ActionButton>
                     <ActionButton fullWidth variant="primary" type="submit" loading={isSubmitting}>{mode === 'add' ? 'Add Subject' : 'Save Changes'}</ActionButton>

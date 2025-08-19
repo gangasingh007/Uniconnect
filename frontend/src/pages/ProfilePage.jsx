@@ -4,7 +4,6 @@ import { useRecoilState } from 'recoil';
 import { userAtom } from '../atoms/userAtom';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
-import Navbar from '../components/Navbar'; // Make sure this path is correct
 import Footer from '../components/Footer';
 import {
     User, Edit3, Mail, GraduationCap, Calendar, Hash, Book, Users, X, Eye, EyeOff,
@@ -147,7 +146,7 @@ const ProfileSidebar = ({ user, onEditClick }) => (
             </div>
         </motion.div>
 
-        <h2 className="text-3xl font-bold text-white truncate max-w-full">{`${user?.firstName || ''} ${user?.lastName || ''}`}</h2>
+        <h2 className="text-3xl font-bold text-white truncate max-w-full pb-2">{`${user?.firstName || ''} ${user?.lastName || ''}`}</h2>
         <p className="text-gray-400 truncate max-w-full mt-1 mb-6">{user?.email || ''}</p>
         
         {/* ENHANCEMENT: Added a glowing shadow to the verified badge */}
@@ -277,7 +276,7 @@ const EditProfileModal = ({ isOpen, onClose, user, setUser }) => {
                 initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
             />
             <motion.div
-                className="relative w-full max-w-4xl max-h-[92vh] overflow-y-auto rounded-3xl p-8 sm:p-10 shadow-2xl bg-gradient-to-br from-[rgba(20,20,35,0.8)] to-[rgba(10,10,15,0.7)] backdrop-blur-2xl"
+                className="relative w-full max-w-4xl max-h-[97vh] overflow-y-auto rounded-3xl p-8 sm:p-10 shadow-2xl bg-gradient-to-br from-[rgba(20,20,35,0.8)] to-[rgba(10,10,15,0.7)] backdrop-blur-2xl"
                 initial={{ scale: 0.9, y: 30, opacity: 0 }}
                 animate={{ scale: 1, y: 0, opacity: 1 }}
                 exit={{ scale: 0.9, y: 30, opacity: 0 }}
@@ -286,7 +285,7 @@ const EditProfileModal = ({ isOpen, onClose, user, setUser }) => {
                 {/* ENHANCEMENT: Added a decorative gradient border effect */}
                 <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 to-blue-500 rounded-t-3xl" />
                 
-                <div className="flex items-center justify-between mb-8">
+                <div className="flex items-center justify-between mb-5">
                     <h2 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400 flex items-center gap-3">
                         <Sparkles /> Edit Profile
                     </h2>
@@ -301,14 +300,6 @@ const EditProfileModal = ({ isOpen, onClose, user, setUser }) => {
                             <InputFieldModal icon={User} label="Last Name" name="lastName" value={formData.lastName || ''} onChange={handleChange} error={errors.lastName} required />
                         </div>
                         <InputFieldModal icon={Mail} label="Email Address" type="email" name="email" value={formData.email || ''} onChange={handleChange} error={errors.email} required />
-                    </FormSectionModal>
-                    <FormSectionModal title="Academic Information" icon={GraduationCap}>
-                        <div className="grid md:grid-cols-3 gap-6">
-                            <InputFieldModal icon={Book} label="Course Name" name="courseName" value={formData.courseName || ''} onChange={handleChange} error={errors.courseName} />
-                            <InputFieldModal icon={Users} label="Section" name="section" value={formData.section || ''} onChange={handleChange} error={errors.section} />
-                            <InputFieldModal icon={Calendar} label="Semester" name="semester" value={formData.semester || ''} onChange={handleChange} error={errors.semester} />
-                        </div>
-                        <InputFieldModal icon={Hash} label="Roll Number" name="rollNumber" value={formData.rollNumber || ''} onChange={handleChange} error={errors.rollNumber} />
                     </FormSectionModal>
                     <FormSectionModal title="Security" icon={Lock}>
                         <div className="grid md:grid-cols-2 gap-6">

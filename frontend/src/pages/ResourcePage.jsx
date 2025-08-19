@@ -201,7 +201,7 @@ const ResourcePage = () => {
         return list.filter(resource => resource.title.toLowerCase().includes(searchTerm.toLowerCase()));
     }, [resources, activeTab, searchTerm]);
 
-    if (loading) return <Loader />;
+    if (loading) return <Loader message='Loading the Resources..'/>;
 
     if (!isValidId(user?.classId) || !isValidId(subjectId)) {
         return (
@@ -236,11 +236,11 @@ const ResourcePage = () => {
                         </div>
                         <div className="flex flex-col sm:flex-row gap-4 w-full lg:w-auto">
                             <div className="relative">
-                                <Search className="absolute left-4 z-10 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                                <Search className="absolute left-4 z-10 top-1/2 transform -translate-y-1/2 text-gray-400 w-9 h-5" />
                                 <input type="text" placeholder="Search resources..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="pl-12 pr-4 py-3 bg-black/20 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50 backdrop-blur-sm transition-all duration-200 w-full sm:w-64" />
                             </div>
                             {user?.role === 'admin' && (
-                                <motion.button onClick={() => openFormModal()} className="group relative bg-gradient-to-r from-purple-600 via-purple-500 to-indigo-600 hover:from-purple-700 hover:via-purple-600 hover:to-indigo-700 text-white px-8 py-4 rounded-2xl flex items-center gap-3 font-semibold shadow-2xl hover:shadow-purple-500/25 transition-all duration-300 whitespace-nowrap" whileHover={{ scale: 1.05, y: -2 }} whileTap={{ scale: 0.95 }}>
+                                <motion.button onClick={() => openFormModal()} className="group relative bg-gradient-to-r from-purple-600 via-purple-500 to-indigo-600 hover:from-purple-700 hover:via-purple-600 hover:to-indigo-700 text-white px-7 py-2 rounded-2xl flex items-center gap-3 font-semibold shadow-2xl hover:shadow-purple-500/25 transition-all duration-300 whitespace-nowrap" whileHover={{ scale: 1.05, y: -2 }} whileTap={{ scale: 0.95 }}>
                                     <Plus size={20} className="group-hover:rotate-90 transition-transform duration-300" />Add Resource
                                 </motion.button>
                             )}
