@@ -280,7 +280,6 @@ const ResourcePage = () => {
     );
 };
 
-// --- CHILD COMPONENTS ---
 
 const ResourceList = ({ list, type, openModal, isAdmin, onEdit, onDelete }) => {
     if (list.length === 0) {

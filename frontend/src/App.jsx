@@ -58,7 +58,7 @@ const App = () => {
   return (
     <div className='animated-bg'>
    <Toaster
-  position="top-center"
+  position="bottom-center"
   gutter={12}
   toastOptions={{
     duration: 4500,
