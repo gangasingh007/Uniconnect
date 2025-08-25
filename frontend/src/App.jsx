@@ -20,6 +20,7 @@ import Syllabus from './pages/Syllabus'
 import DateSheet from './pages/DateSheet'
 import AcademicCalender from './pages/AcademicCalender'
 import FileUpload from './components/FileUpload'
+import InteractiveBackground from './components/InteractiveBackground'
 
 
 const App = () => {
@@ -58,7 +59,7 @@ const App = () => {
   return (
     <div className='animated-bg'>
    <Toaster
-  position="bottom-center"
+  position="top-center"
   gutter={12}
   toastOptions={{
     duration: 4500,

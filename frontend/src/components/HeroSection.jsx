@@ -29,8 +29,8 @@ const HeroSection = () => {
 
     const quickActions = [
         { icon: BookOpen, label: 'View Subjects', color: 'from-purple-500 to-indigo-500', href: '/subjects', description: 'Browse your course subjects' },
-        { icon: CalendarCheck2, label: 'Datesheet', color: 'from-sky-500 to-cyan-500', href: "/datesheet", description: 'Check your exam schedule' },
-        { icon: LibraryBig, label: 'Syllabus', color: 'from-emerald-500 to-teal-500', href: "/syllabus", description: 'Review your curriculum' }
+        { icon: CalendarCheck2, label: 'Datesheet', color: 'from-sky-500 to-cyan-500', href: "/datesheet", description: 'Check your exam schedule',target:"new" },
+        { icon: LibraryBig, label: 'Syllabus', color: 'from-emerald-500 to-teal-500', href: "/syllabus", description: 'Review your curriculum',target:"new" }
     ];
 
     return (
