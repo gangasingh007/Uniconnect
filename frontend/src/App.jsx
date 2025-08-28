@@ -21,6 +21,7 @@ import DateSheet from './pages/DateSheet'
 import AcademicCalender from './pages/AcademicCalender'
 import FileUpload from './components/FileUpload'
 import InteractiveBackground from './components/InteractiveBackground'
+import SummaryPage from './pages/SummaryPage'
 
 
 const App = () => {
@@ -208,9 +209,10 @@ const App = () => {
         <Route path='/ac-calendar' element={<ProtectedRoute>
         <AcademicCalender />
       </ProtectedRoute>}/>
-        <Route path='/upload' element={<ProtectedRoute>
-        <FileUpload />
+        <Route path='/summary' element={<ProtectedRoute>
+        <SummaryPage />
       </ProtectedRoute>}/>
+        
       </Routes>
     </BrowserRouter>}
     </div>

@@ -1,10 +1,7 @@
 import express from "express";
 import { authMiddleware } from "../middlewares/authMiddleware.js";
 import { adminMiddleware } from "../middlewares/adminMiddleware.js";
-import { createDocumentResource, createYtresource, deleteResource, getAllClassResources, getResources, updateResource } from "../controllers/resource.controller.js";
-// import multerUpload from "../middlewares/multer.js";
-
-
+import { createDocumentResource, createYtresource, deleteResource, getAllClassResources, getResources, summarizeDocumentGemini, updateResource } from "../controllers/resource.controller.js";
 
 const router = express.Router();
 
@@ -14,5 +11,8 @@ router.delete("/:classId/:subjectId/:resourceId",authMiddleware,adminMiddleware,
 router.put("/:subjectId/:classId/:resourceId",authMiddleware,adminMiddleware,updateResource)
 router.get('/all', authMiddleware, getAllClassResources);
 router.post('/:classId/:subjectId/document-link', authMiddleware,adminMiddleware, createDocumentResource);
+router.get('/gemini-summarize/:resourceId', summarizeDocumentGemini);
+
+
 
 export default router;

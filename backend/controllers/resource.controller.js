@@ -4,6 +4,8 @@ import mongoose from "mongoose";
 import { createResourceSchema } from "../types/resource.validatior.js";
 import User from "../models/user.model.js";
 import Resource from '../models/resource.model.js';
+import { extractTextFromPdf } from '../utils/pdfUtils.js';
+import { geminiSummarize } from '../utils/geminiUtils.js';
 
 
 export const createYtresource = async (req, res) => {
@@ -308,3 +310,68 @@ export const createDocumentResource = async (req, res) => {
   }
 };
 
+export const extractDocumentText = async (req, res) => {
+  const { resourceId } = req.params;
+
+
+  try {
+    // 1. Fetch the resource from the database
+    const resource = await Resource.findById(resourceId);
+    
+    if (!resource || resource.type !== 'Document') {
+      return res.status(404).json({ message: 'Document resource not found.' });
+    }
+
+    // --- DEBUGGING STEP: Log the link to verify it's a URL ---
+    console.log(`Attempting to extract text from link: ${resource.link}`);
+
+    // This is where the error originates if resource.link is a local path
+    if (!resource.link || !resource.link.toLowerCase().startsWith('http')) {
+        return res.status(400).json({
+            message: 'Invalid resource link. The link must be a valid web URL (http or https).',
+            link: resource.link
+        });
+    }
+    console.log("hello")
+    // 2. Extract text from the PDF URL
+    const extractedText = await extractTextFromPdf(resource.link);
+
+    // 3. Send the successful response
+    res.status(200).json({
+      message: 'Text extracted successfully.',
+      text: extractedText,
+      resourceId: resource._id
+    });
+  } catch (error) {
+    // Catch errors from both the database query and the text extraction
+    console.error('Text extraction process failed:', error);
+    res.status(500).json({ 
+      message: 'Failed to extract text from the document.',
+      error: error.message 
+    });
+  }
+};
+
+
+export const summarizeDocumentGemini = async (req, res) => {
+  const { resourceId } = req.params;
+
+  try {
+    // 1. Get the document link and extract text
+    const resource = await Resource.findById(resourceId);
+    if (!resource || resource.type !== 'Document')
+      return res.status(404).json({ message: 'Document resource not found.' });
+
+    const text = await extractTextFromPdf(resource.link);
+    console.log(text)
+    // 2. Summarize with Gemini
+    const summary = await geminiSummarize(text.slice(0, 8000)); // Gemini has input limits
+    console.log(summary)
+    // 3. (Optional) Save summary to resource
+    await Resource.findByIdAndUpdate(resourceId, { summary });
+
+    res.status(200).json({ message: 'Gemini summary generated.', summary });
+  } catch (error) {
+    res.status(500).json({ message: 'Gemini summarization failed', error: error.message });
+  }
+};
