@@ -1,4 +1,4 @@
-## Things to do next 
--Change to email password signin authentication
--figure out the cloud storage to store and upload the resources
--ensure typesafety
+## Things to do now
+ - add the ai functionality to the product
+ - Last minute touchups
+ - check responseivness

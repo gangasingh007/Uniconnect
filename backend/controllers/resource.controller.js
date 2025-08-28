@@ -260,72 +260,51 @@ export const updateResource = async (req,res) => {
 }
 
 
-// export const uploadResourceDocument = async (req, res) => {
-//   const { classId, subjectId } = req.params;
-//   const { title } = req.body;
-//   const { file } = req; // Multer adds this
+export const createDocumentResource = async (req, res) => {
+  try {
+    const { classId, subjectId } = req.params;
+    const createdById = req.userId;
+    const { title, link } = req.body;
 
-//   console.log('Request Body (title):', title);
-//   console.log('Request File Object (from Multer):', file);
+    // Validate inputs
+    if (!title || !link) {
+      return res.status(400).json({ message: "Both title and link are required." });
+    }
+    if (!/^https?:\/\//.test(link)) {
+      return res.status(400).json({ message: "Please provide a valid URL." });
+    }
 
-//   // 1. Validation
-//   if (!file) {
-//     console.error("Validation Failed: No file was received by the server.");
-//     return res.status(400).json({ message: 'No file uploaded. Make sure the file is sent correctly.' });
-//   }
-//   if (!title) {
-//     return res.status(400).json({ message: 'Title is required.' });
-//   }
+    // Check class/subject existence...
+    const classDoc = await Class.findById(classId);
+    if (!classDoc) return res.status(404).json({ message: "Class not found." });
 
-//   let textContent = '';
+    const subject = await Subject.findById(subjectId);
+    if (!subject) return res.status(404).json({ message: "Subject not found." });
 
-//   try {
-//     // 2. Upload file to Cloudinary
-//     const uploadResult = await uploadFromBuffer(file.buffer, 'Uniconnect/documents');
-//     if (!uploadResult || !uploadResult.secure_url) {
-//       throw new Error('Cloudinary upload failed.');
-//     }
+    const creteduser = await User.findById({
+        _id : createdById
+    })
 
-//     // 3. Parse PDF if buffer exists
-//     if (file.buffer) {
-//       try {
-//         const data = await pdf(file.buffer); // ✅ Pass buffer directly
-//         textContent = data.text || '';
-//         console.log("PDF parsing successful.");
-//       } catch (err) {
-//         console.warn("PDF parsing failed:", err.message);
-//         textContent = '';
-//       }
-//     } else {
-//       console.error("No file buffer available for PDF parsing.");
-//     }
+    const createdBy = creteduser.firstName
 
-//     // 4. Save resource in DB
-//     const newResource = new Resource({
-//       title,
-//       link: uploadResult.secure_url,
-//       type: 'Document',
-//       subject: subjectId,
-//       class: classId,
-//       createdBy: req.user._id,
-//       content: textContent,
-//     });
+    const newResource = await Resource.create({
+      title,
+      link,
+      type: "Document",
+      subject: subjectId,
+      class: classId,
+      createdBy,
+    });
 
-//     await newResource.save();
+    await Subject.findByIdAndUpdate(subjectId, { $push: { resources: newResource._id } });
 
-//     // 5. Link resource to subject
-//     await Subject.findByIdAndUpdate(subjectId, { $push: { resources: newResource._id } });
+    res.status(201).json({
+      message: "Document resource created via link.",
+      resource: newResource,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error. Could not create document link resource." });
+  }
+};
 
-//     res.status(201).json({
-//       message: 'Document uploaded and resource created successfully!',
-//       resource: newResource,
-//     });
-
-//   } catch (error) {
-//     console.error('Error during resource upload:', error);
-//     res.status(500).json({
-//       message: 'Server error during file upload.',
-//       error: error.message
-//     });
-//   }
-// };
