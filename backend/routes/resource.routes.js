@@ -11,7 +11,7 @@ router.delete("/:classId/:subjectId/:resourceId",authMiddleware,adminMiddleware,
 router.put("/:subjectId/:classId/:resourceId",authMiddleware,adminMiddleware,updateResource)
 router.get('/all', authMiddleware, getAllClassResources);
 router.post('/:classId/:subjectId/document-link', authMiddleware,adminMiddleware, createDocumentResource);
-router.get('/gemini-summarize/:resourceId', summarizeDocumentGemini);
+router.get('/gemini-summarize/:classId/:subjectId/:resourceId', summarizeDocumentGemini);
 
 
 

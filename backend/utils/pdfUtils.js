@@ -1,44 +1,66 @@
 import axios from 'axios';
-import { extractText } from 'unpdf'; // Use the new library
+import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf.mjs';
 
 /**
- * Extracts text from a PDF document hosted at a given URL using `unpdf`.
+ * Converts a standard Google Drive sharing link into a direct download link.
+ * @param {string} url The original Google Drive URL.
+ * @returns {string} The direct download URL or the original URL.
+ */
+const getDirectGoogleDriveUrl = (url) => {
+  const match = url.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/);
+  if (match && match[1]) {
+    const fileId = match[1];
+    return `https://drive.google.com/uc?export=download&id=${fileId}`;
+  }
+  return url;
+};
+
+/**
+ * Extracts text from a PDF document by using pdfjs-dist directly.
  *
- * @param {string} pdfUrl - The public, absolute URL of the PDF file.
- * @returns {Promise<string>} A promise that resolves to the extracted plain text.
- * @throws Will throw an error if the URL is invalid or the PDF cannot be processed.
+ * @param {string} pdfUrl - The public URL of the PDF file.
+ * @returns {Promise<string>} A promise that resolves to the extracted text.
  */
 export const extractTextFromPdf = async (pdfUrl) => {
   if (!pdfUrl || !pdfUrl.toLowerCase().startsWith('http')) {
-    throw new Error('Invalid PDF URL provided. The URL must be an absolute web address.');
+    throw new Error('Invalid PDF URL provided. Must be an absolute web address.');
   }
 
+  const directUrl = getDirectGoogleDriveUrl(pdfUrl);
+
   try {
-    // 1. Fetch the PDF as a binary buffer
-    const response = await axios.get(pdfUrl, {
+    const response = await axios.get(directUrl, {
       responseType: 'arraybuffer'
     });
     
-    const pdfBuffer = Buffer.from(response.data);
+    const pdfData = new Uint8Array(response.data);
 
-    // 2. Extract text using unpdf
-    const { text } = await extractText(pdfBuffer);
-    
-    // 3. Clean and return the text
-    if (!text || text.trim().length === 0) {
-      throw new Error('No text could be extracted. The document might be image-only.');
+    // Use pdfjs-dist to load and parse the document
+    const pdf = await pdfjsLib.getDocument({ data: pdfData }).promise;
+    const numPages = pdf.numPages;
+    let fullText = '';
+
+    for (let i = 1; i <= numPages; i++) {
+      const page = await pdf.getPage(i);
+      const textContent = await page.getTextContent();
+      const pageText = textContent.items.map(item => item.str).join(' ');
+      fullText += pageText + '\n';
     }
     
-    const cleanedText = text.replace(/\s+/g, ' ').trim();
-    return cleanedText;
+    if (!fullText.trim()) {
+      throw new Error('Failed to extract readable text. The document might be empty or image-only.');
+    }
+
+    return fullText.replace(/\s+/g, ' ').trim();
 
   } catch (error) {
-    console.error(`PDF processing failed for URL: ${pdfUrl}`, error.message);
+    console.error(`PDF processing failed for URL: ${directUrl}`, error.message);
     
     if (error.isAxiosError) {
-      throw new Error('Failed to download the PDF. Please check if the URL is correct and publicly accessible.');
+      throw new Error('Failed to download the PDF. Check if the URL is correct and publicly accessible.');
     }
     
     throw new Error(`Failed to extract text from the PDF. ${error.message}`);
   }
 };
+

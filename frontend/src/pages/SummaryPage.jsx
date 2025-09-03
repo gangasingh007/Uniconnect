@@ -38,7 +38,7 @@ const SummaryPage = () => {
         // --- FIX: Construct the correct API URL with all IDs ---
         // Assuming your backend route is structured like this
         const response = await axios.get(
-          `${import.meta.env.VITE_BACKEND_URL}/api/v1/resource/${classId}/${subjectId}/${resourceId}/summarize`,
+          `${import.meta.env.VITE_BACKEND_URL}/api/v1/resource/gemini-summarize/${classId}/${subjectId}/${resourceId}`,
           { headers: { authorization: `Bearer ${token}` } }
         );
         

@@ -17,7 +17,6 @@
 .toast-container .custom-toast {
   position: relative;
   pointer-events: auto;
-  user-select: none;
 }
 
 .toast-container .custom-toast::before {
