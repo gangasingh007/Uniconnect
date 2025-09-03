@@ -14,7 +14,8 @@ import {
   Heart,
   ArrowRight,
   Computer,
-  Sparkles
+  Sparkles,
+  Laptop
 } from 'lucide-react';
 
 
@@ -211,6 +212,10 @@ const Footer = () => {
             {/* Contact Info */}
             <div className="space-y-4 mb-6">
               <div className="flex items-center gap-3 text-gray-400 text-sm">
+                <Laptop className="w-4 h-4 text-orange-400" />
+                <span>Developed By Ganga Singh</span>
+              </div>
+              <div className="flex items-center gap-3 text-gray-400 text-sm">
                 <Mail className="w-4 h-4 text-purple-400" />
                 <span>gangasingh1734@gmail.com</span>
               </div>
@@ -274,16 +279,9 @@ const Footer = () => {
           transition={{ duration: 0.6, delay: 0.4 }}
           viewport={{ once: true }}
         >
-          <div className="flex justify-center flex-col md:flex-row justify-between items-center gap-4">
+          <div className="flex justify-center flex-col md:flex-row items-center gap-4">
             <div className="flex items-center gap-2 text-gray-400 text-sm">
-              <span>© {currentYear} UniConnect. Developed with</span>
-              <motion.div
-                animate={{ scale: [1, 1.2, 1] }}
-                transition={{ duration: 1.5, repeat: Infinity }}
-              >
-                <Heart className="w-4 h-4 text-red-400 fill-current" />
-              </motion.div>
-              <span>by - Ganga Singh</span>
+              <span>© {currentYear} UniConnect</span>
             </div>
            
           </div>

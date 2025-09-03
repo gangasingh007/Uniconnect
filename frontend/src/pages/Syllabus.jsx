@@ -1,11 +1,16 @@
-import React from 'react'
+import React from "react";
+import syllabusPDF from "../assets/syllabus.pdf";
 
 const Syllabus = () => {
   return (
     <div>
-         <embed src="../assets/syllabus.pdf" style="width: 100%; height: 100vh;" type=""></embed>
+      <embed
+        src={syllabusPDF}
+        type="application/pdf"
+        style={{ width: "100%", height: "100vh" }}
+      />
     </div>
-  )
-}
+  );
+};
 
-export default Syllabus
+export default Syllabus;
