@@ -363,10 +363,8 @@ export const summarizeDocumentGemini = async (req, res) => {
       return res.status(404).json({ message: 'Document resource not found.' });
 
     const text = await extractTextFromPdf(resource.link);
-    console.log(text)
     // 2. Summarize with Gemini
     const summary = await geminiSummarize(text.slice(0, 8000)); // Gemini has input limits
-    console.log(summary)
     // 3. (Optional) Save summary to resource
     await Resource.findByIdAndUpdate(resourceId, { summary });
 

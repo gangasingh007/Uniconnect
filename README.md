@@ -19,6 +19,7 @@ UniConnect is a full-stack web application for university students and admins to
 
 ---
 
+
 ## Features
 
 - User registration & login (JWT-based)
@@ -26,6 +27,7 @@ UniConnect is a full-stack web application for university students and admins to
 - Course & subject management
 - Resource sharing (YouTube links, documents)
 - Document upload via Firebase Storage
+- AI-powered document summarization (Gemini API)
 - Modern, responsive UI
 - Toast notifications, animations, protected routes
 
@@ -151,6 +153,7 @@ UniConnect/
 - `PUT /api/subject/:id` — Update subject
 - `DELETE /api/subject/:id` — Delete subject
 
+
 ### Resources
 
 - `GET /api/resource/:classId/:subjectId` — Get resources for a subject
@@ -158,6 +161,7 @@ UniConnect/
 - `POST /api/resource/upload/:classId/:subjectId` — Upload a document (multipart/form-data)
 - `PUT /api/resource/:subjectId/:classId/:resourceId` — Update resource
 - `DELETE /api/resource/:classId/:subjectId/:resourceId` — Delete resource
+- `GET /api/resource/gemini-summarize/:classId/:subjectId/:resourceId` — Get AI-generated summary for a document
 
 ### Users
 
@@ -180,11 +184,13 @@ UniConnect/
 
 ---
 
-## Document Uploads
+
+## Document Uploads & AI Summarization
 
 - Documents are uploaded via Firebase Storage.
 - After upload, the file URL is sent to the backend and stored as a resource.
 - Supported file types: PDF, DOCX, etc. (Max 10MB)
+- AI-powered summarization: Users can view an AI-generated summary of uploaded documents using the Gemini API integration.
 
 ---
 

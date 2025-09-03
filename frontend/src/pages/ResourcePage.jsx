@@ -79,7 +79,7 @@ const useResourcesAPI = (classId, subjectId) => {
 
     const updateResource = (resourceId, formData) => {
         return handleApiCall(
-            () => axios.put(`${API_URL}/api/v1/resource/${classId}/${subjectId}/${resourceId}`, formData, { headers: { authorization: `Bearer ${token}` } }),
+            () => axios.put(`${API_URL}/api/v1/resource/${subjectId}/${classId}/${resourceId}`, formData, { headers: { authorization: `Bearer ${token}` } }),
             'Resource updated successfully!'
         );
     };
@@ -243,7 +243,7 @@ const PageHeader = ({ resourceCount, onAddClick, isAdmin, searchTerm, setSearchT
     </motion.div>
 );
 
-const AiFeatureCard = () => ( <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.3 }} className="relative max-w-7xl mx-auto mb-8 p-6 bg-gradient-to-r from-blue-900/30 to-purple-500/30 rounded-2xl border border-blue-400/30 overflow-hidden" > <div className="absolute -top-1/2 -left-1/4 w-full h-[200%] bg-[radial-gradient(circle_at_center,_rgba(128,90,213,0.3),_transparent_40%)] animate-pulse-slow"></div> <div className="relative z-10 flex flex-col sm:flex-row items-center gap-4"> <div className="p-3 bg-white/10 rounded-full"> <Sparkles className="w-8 h-8 text-purple-300" /> </div> <div> <h3 className="text-xl font-bold text-white">AI Summarization Feature is Coming Soon!</h3> <p className="text-blue-200 mt-1">Get ready to summarize your documents with a single click.</p> </div> </div> </motion.div> );
+const AiFeatureCard = () => ( <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.3 }} className="relative max-w-7xl mx-auto mb-8 p-6 bg-gradient-to-r from-blue-900/30 to-purple-500/30 rounded-2xl border border-blue-400/30 overflow-hidden" > <div className="absolute -top-1/2 -left-1/4 w-full h-[200%] bg-[radial-gradient(circle_at_center,_rgba(128,90,213,0.3),_transparent_40%)] animate-pulse-slow"></div> <div className="relative z-10 flex flex-col sm:flex-row items-center gap-4"> <div className="p-3 bg-white/10 rounded-full"> <Sparkles className="w-8 h-8 text-purple-300" /> </div> <div> <h3 className="text-xl font-bold text-white">AI Summarization Feature is Coming Soon!</h3> <p className="text-blue-200 mt-1">Summarization for the image based and Scanned documents is not avaliable yet</p> </div> </div> </motion.div> );
 
 const ResourceGrid = ({ resources, loading, error, onRetry, onAddClick, onEdit, onDelete, onSummarize, isAdmin, activeTab }) => {
     if (loading && resources.length === 0) return <Loader message='Loading Resources...' />;
@@ -292,7 +292,7 @@ const ResourceCard = ({ resource, onEdit, onDelete, onSummarize, isAdmin }) => {
                  <div className="mt-4 pt-4 border-t border-white/10 flex justify-between items-center">
                     <div className="flex items-center gap-2">
                          {resource.type === 'Document' && (
-                             <motion.button disabled={true} whileHover={{scale: 1.1}} whileTap={{scale: 0.95}} onClick={(e) => { e.stopPropagation(); onSummarize(resource._id); }} className="p-2 bg-purple-500/20 hover:bg-purple-500/40 text-purple-300 rounded-full" aria-label="Summarize">
+                             <motion.button whileHover={{scale: 1.1}} whileTap={{scale: 0.95}} onClick={(e) => { e.stopPropagation(); onSummarize(resource._id); }} className="p-2 bg-purple-500/20 hover:bg-purple-500/40 text-purple-300 rounded-full" aria-label="Summarize">
                                  <div className="flex justify-center items-center px-2">
                                 <div className="flex justify-center items-center px-1"><Sparkles size={16} /></div>
                                  Summarize With AI

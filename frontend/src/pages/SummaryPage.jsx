@@ -59,7 +59,7 @@ const SummaryPage = () => {
   }, [resourceId, classId, subjectId]); // Add classId and subjectId to dependency array
 
   return (
-    <div className="min-h-screen w-full relative bg-gradient-to-br from-[#0a0a0f] via-[#141423] to-[#1a1a2e] text-gray-200">
+    <div className="min-h-screen w-full relative text-gray-200">
       <div className="absolute inset-0 -z-10"><InteractiveBackground /></div>
       <Navbar />
       <main className="relative z-10 flex justify-center items-start pt-24 pb-12 px-4">
@@ -94,7 +94,7 @@ const SummaryPage = () => {
           {error && !loading && (
             <div className="flex flex-col items-center justify-center my-12 text-center text-red-400 bg-red-500/10 p-6 rounded-xl border border-red-500/20">
                 <AlertCircle size={40} className="mb-4" />
-                <p className="font-semibold text-lg">Failed to Generate Summary</p>
+                <p className="font-semibold text-lg">The Document is not OCR friendly</p>
                 <p className="text-red-300/80 mt-1">{error}</p>
             </div>
           )}
