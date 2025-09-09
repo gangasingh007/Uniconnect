@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ChevronRight, BookOpen, Brain, Users, Search, FileText, Zap, Star, Menu, X, ArrowRight, Sparkles, Shield, Clock, Target } from 'lucide-react';
 import Footer from '../components/Footer';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 // Enhanced Feature Card with better animations and styling
 const FeatureCard = ({ icon, title, description, index }) => (
@@ -131,6 +132,8 @@ const StatsSection = () => (
 // Main Landing Page Component
 const LandingPage = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [users , setusers ] = useState("")
+  const [resources , setresources ] = useState("")
   const [visibleSections, setVisibleSections] = useState({});
   const [scrollY, setScrollY] = useState(0);
   const navigate = useNavigate()
@@ -140,6 +143,8 @@ const LandingPage = () => {
     const handleScroll = () => setScrollY(window.scrollY);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
+
+   
   }, []);
 
   useEffect(() => {

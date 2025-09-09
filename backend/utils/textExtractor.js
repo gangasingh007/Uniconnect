@@ -1,6 +1,7 @@
 import axios from 'axios';
 import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf.mjs';
-import Tesseract from 'tesseract.js';
+import { createWorker } from 'tesseract.js';
+import { createCanvas } from 'canvas';
 
 /**
  * Converts a standard Google Drive sharing link into a direct download link.
@@ -18,72 +19,111 @@ const getDirectGoogleDriveUrl = (url) => {
 
 /**
  * Extracts text from a PDF, automatically using OCR for image-based documents.
- * This is the function your controllers will import and use.
+ * Version 5: Adds versioned logging and handles encrypted PDFs.
  *
  * @param {string} pdfUrl - The public URL of the PDF file.
  * @returns {Promise<string>} A promise that resolves to the extracted text.
  */
 export const extractTextFromPdf = async (pdfUrl) => {
+  const EXTRACTOR_VERSION = 'v5'; // For debugging which version is running
+  
   if (!pdfUrl || !pdfUrl.toLowerCase().startsWith('http')) {
-    throw new Error('Invalid PDF URL provided. Must be an absolute web address.');
+    throw new Error(`[Extractor ${EXTRACTOR_VERSION}] Invalid PDF URL provided.`);
   }
 
   const directUrl = getDirectGoogleDriveUrl(pdfUrl);
-  console.log(`Processing document from: ${directUrl}`);
+  console.log(`[Extractor ${EXTRACTOR_VERSION}] Processing document from: ${directUrl}`);
 
   try {
-    // Download the PDF data once. We'll use this buffer for both attempts.
     const response = await axios.get(directUrl, {
       responseType: 'arraybuffer'
     });
     const pdfData = new Uint8Array(response.data);
 
-    // --- STEP 1: Attempt fast, standard text extraction first ---
+    // --- STEP 1: Attempt fast, standard text extraction ---
     let fullText = '';
     try {
-      const pdf = await pdfjsLib.getDocument({ data: pdfData }).promise;
+      const pdf = await pdfjsLib.getDocument({ data: pdfData.slice(0) }).promise;
+      
+      if (pdf.isEncrypted) {
+        throw new Error('The PDF is encrypted and cannot be processed.');
+      }
+
       for (let i = 1; i <= pdf.numPages; i++) {
         const page = await pdf.getPage(i);
         const textContent = await page.getTextContent();
-        // Filter out any potential empty items and join
-        const pageText = textContent.items.map(item => item.str).join(' ');
-        fullText += pageText + '\n';
+        fullText += textContent.items.map(item => item.str).join(' ') + '\n';
       }
     } catch (pdfJsError) {
-      console.warn('pdf.js failed, likely an image-based PDF. Proceeding with OCR.');
-      fullText = ''; // Ensure fullText is empty to trigger the OCR fallback
+      if (pdfJsError.message.includes('encrypted')) throw pdfJsError; // Re-throw encryption error
+      console.warn(`[Extractor ${EXTRACTOR_VERSION}] pdf.js failed, likely an image-based PDF. Proceeding with OCR.`);
+      fullText = '';
     }
 
     // --- STEP 2: Check if standard extraction was successful ---
-    // If we got a reasonable amount of text, we're done!
-    if (fullText.trim().length > 50) { // Using a slightly higher threshold
-      console.log('Successfully extracted text using standard pdf.js method.');
+    if (fullText.trim().length > 50) {
+      console.log(`[Extractor ${EXTRACTOR_VERSION}] Successfully extracted text using standard pdf.js method.`);
       return fullText.replace(/\s+/g, ' ').trim();
     }
 
-    // --- STEP 3: If standard extraction fails, fall back to OCR with Tesseract.js ---
-    console.log('Standard extraction yielded no text. Falling back to OCR...');
+    // --- STEP 3: Fallback to OCR using a single Tesseract worker ---
+    console.log(`[Extractor ${EXTRACTOR_VERSION}] Standard extraction failed. Falling back to robust OCR...`);
+    let ocrText = '';
+    const worker = await createWorker({
+        logger: m => console.log(`[Tesseract] ${m.status} (${(m.progress * 100).toFixed(0)}%)`)
+    });
 
-    // Tesseract.recognize can take the buffer directly.
-    const { data: { text } } = await Tesseract.recognize(
-      Buffer.from(pdfData), // Convert Uint8Array to a Buffer for Tesseract
-      'eng', // Specify the language (e.g., 'eng' for English)
-      { logger: m => console.log(m) } // Optional: log progress for debugging
-    );
+    try {
+        await worker.loadLanguage('eng');
+        await worker.initialize('eng');
 
-    if (!text.trim()) {
-      throw new Error('OCR processing also failed. The document might be empty or unreadable.');
+        const pdf = await pdfjsLib.getDocument({ data: pdfData.slice(0) }).promise;
+        if (pdf.isEncrypted) {
+            throw new Error('The PDF is encrypted and cannot be processed by the OCR engine.');
+        }
+
+        console.log(`[OCR] PDF has ${pdf.numPages} page(s). Starting render and recognition.`);
+
+        for (let i = 1; i <= pdf.numPages; i++) {
+            console.log(`[OCR] Processing page ${i}...`);
+            const page = await pdf.getPage(i);
+            const viewport = page.getViewport({ scale: 2.0 });
+            
+            const canvas = createCanvas(viewport.width, viewport.height);
+            const context = canvas.getContext('2d');
+            
+            await page.render({ canvasContext: context, viewport: viewport }).promise;
+            
+            const imageBuffer = canvas.toBuffer('image/png');
+            
+            const { data: { text } } = await worker.recognize(imageBuffer);
+            ocrText += text + '\n';
+        }
+    } catch (ocrError) {
+        console.error('[OCR Process Error]', ocrError);
+        throw new Error(`[Extractor ${EXTRACTOR_VERSION}] The OCR process failed internally. Reason: ${ocrError.message}`);
+    } finally {
+        await worker.terminate();
+        console.log('[Tesseract] Worker terminated.');
+    }
+    
+    if (!ocrText.trim()) {
+        throw new Error(`[Extractor ${EXTRACTOR_VERSION}] OCR processing completed, but no readable text was found.`);
     }
 
-    console.log('Successfully extracted text using Tesseract OCR.');
-    return text.replace(/\s+/g, ' ').trim();
+    console.log(`[Extractor ${EXTRACTOR_VERSION}] Successfully extracted text using Tesseract OCR.`);
+    return ocrText.replace(/\s+/g, ' ').trim();
 
   } catch (error) {
-    console.error(`Fatal error during PDF processing for URL: ${directUrl}`, error.message);
+    console.error(`[Extractor ${EXTRACTOR_VERSION}] Fatal error during PDF processing for URL: ${directUrl}`);
+    console.error(error); 
+    
+    let userMessage = error.message;
     if (error.isAxiosError) {
-      throw new Error('Failed to download the PDF. Check if the URL is correct and publicly accessible.');
+      userMessage = `[Extractor ${EXTRACTOR_VERSION}] Failed to download the PDF. Check if the URL is correct and publicly accessible.`;
     }
-    // Re-throw the error to be caught by the controller
-    throw error;
+    
+    throw new Error(userMessage);
   }
 };
+
